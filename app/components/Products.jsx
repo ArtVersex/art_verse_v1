@@ -106,11 +106,11 @@ export default function ProductsGridView({ products }) {
                   </Link>
 
                   {/* Discount Badge */}
-                  {discount && (
+                  {/* {discount && (
                     <div className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-sm">
                       -{discount}%
                     </div>
-                  )}
+                  )} */}
 
                   {/* Quick Action Buttons - Appear on Hover */}
                   <div className="absolute inset-0 bg-black/5 flex items-center justify-center gap-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
@@ -180,13 +180,13 @@ export default function ProductsGridView({ products }) {
                   </div>
 
                   {/* Stock Information - Now visible */}
-                  <div className="mt-1 text-xs">
+                  {/* <div className="mt-1 text-xs">
                     {stockAvailable > 0 ? (
                       <span className="text-green-600">In Stock ({stockAvailable})</span>
                     ) : (
                       <span className="text-red-600">Out of Stock</span>
                     )}
-                  </div>
+                  </div> */}
 
                   {/* Action Buttons - Side by side with enhanced premium design */}
                   <div className="mt-3 flex gap-2">
