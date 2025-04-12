@@ -6,7 +6,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "../../spinner";
+// import Spinner from "../../spinner";
 
 export default function ListView() {
 
@@ -15,7 +15,7 @@ export default function ListView() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-40">
-                <Spinner size={24} />
+                {/* <Spinner size={24} /> */}
                 Loading...
             </div>
         );

@@ -5,7 +5,7 @@ import { UploadCloud } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "../../spinner";
+// import Spinner from "../../spinner";
 
 export default function Form() {
     const [data, setData] = useState({});
@@ -179,7 +179,7 @@ export default function Form() {
                 >
                     {isLoading ? (
                         <>
-                            <Spinner size={5} />
+                            {/* <Spinner size={5} /> */}
                             {id ? "Updating..." : "Creating..."}
                         </>
                     ) : (
