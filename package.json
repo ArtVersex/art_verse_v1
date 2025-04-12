@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@vercel/next": "^4.7.7",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^4.1.0",
     "firebase": "^11.4.0",
