@@ -60,7 +60,7 @@ export default function BuyNowButton({
         return classes + "border-2 border-emerald-500 text-emerald-600 bg-emerald-50 hover:bg-emerald-100";
       
       case "premium":
-        return classes + "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 transform hover:-translate-y-px";
+        return classes + "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 transform hover:-translate-y-px";
       
       default: // "default"
         return classes + "bg-emerald-600 text-white hover:bg-emerald-700";
