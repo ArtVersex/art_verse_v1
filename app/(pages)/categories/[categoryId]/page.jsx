@@ -1,8 +1,8 @@
 import ProductsGridView from "@/app/components/Products";
 import { getProductByCategory } from "@/lib/firestore/products/read_server";
 import { getcategory } from "@/lib/firestore/categories/read_server";
-import RelatedProducts from "../../products1/[productId]/components/RelatedProduct";
-import { motion } from "framer-motion";
+// import RelatedProducts from "../../products1/[productId]/components/RelatedProduct";
+// import { motion } from "framer-motion";
 
 export default async function CategoryPage({ params }) {
   const resolvedParams = await params;
