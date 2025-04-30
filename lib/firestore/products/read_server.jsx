@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, orderBy, query, where } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, orderBy, query, where,limit as firestoreLimit } from "firebase/firestore"
 import { db } from "../firebase"
 
 export const getProduct = async ({id}) =>{
@@ -19,11 +19,27 @@ export const getFeaturedProducts = async ()=>{
     return list.docs.map((snap) => snap.data());
 }
 
-export const getProducts = async ()=>{
-    const list = await getDocs(query(collection(db, "products"), orderBy('timestampcreate','desc'))
-);
+export const getProducts = async ({ limit = null } = {}) => {
+    // Start with base query ordered by timestampcreate in descending order
+    let productQuery = query(collection(db, "products"), orderBy('timestampcreate', 'desc'));
+    
+    // Add limit if it's provided and is a number
+    if (limit !== null && typeof limit === 'number') {
+      productQuery = query(productQuery, firestoreLimit(limit));
+    }
+    
+    // Execute the query
+    const list = await getDocs(productQuery);
+    
+    // Return the documents
     return list.docs.map((snap) => snap.data());
-}
+  }
+
+// export const getProducts = async ()=>{
+//     const list = await getDocs(query(collection(db, "products"), orderBy('timestampcreate','desc'))
+// );
+//     return list.docs.map((snap) => snap.data());
+// }
 
 // export const getProductByCategory = async ({categoryId})=>{
 //     const list = await getDocs(query(collection(db, "products"), orderBy('timestampcreate','desc'), where("categoryID", "==", categoryId))

@@ -51,6 +51,8 @@ export default function AddToCartButton({
     if (variant === "quick" && e) {
       e.preventDefault();
       e.stopPropagation();
+    } else if (e) {
+      e.preventDefault();
     }
     
     // Check if we would exceed stock
@@ -125,20 +127,20 @@ export default function AddToCartButton({
     if (buttonText) return buttonText;
     if (isLoading) return 'Adding...';
     if (stock <= 0) return 'Out of Stock';
-    if (wouldExceedStock()) return 'Max Stock Reached';
+    if (wouldExceedStock()) return 'Max Stock';
     return isInCart ? 'Add More' : 'Add to Cart';
   };
 
   // Size classes
   const sizeClasses = {
-    sm: "text-xs py-1.5 px-3",
+    sm: "text-xs py-1.5 px-2",
     md: "text-sm py-2 px-4",
     lg: "text-base py-2.5 px-5"
   };
 
   // Style variants
   const getVariantClasses = () => {
-    const base = "rounded font-medium transition-all duration-300 flex items-center justify-center gap-2 ";
+    const base = "rounded font-medium transition-all duration-300 flex items-center justify-center gap-1 ";
     
     // Determine width class
     const widthClass = fullWidth ? "w-full " : "";
@@ -168,8 +170,8 @@ export default function AddToCartButton({
       
       case "premium":
         return classes + (isInCart 
-          ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transform hover:-translate-y-px" 
-          : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md hover:shadow-lg hover:from-indigo-600 hover:to-purple-700 transform hover:-translate-y-px");
+          ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-sm hover:shadow-md" 
+          : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-sm hover:shadow-md");
       
       default: // "default"
         return classes + (isInCart 
@@ -201,19 +203,16 @@ export default function AddToCartButton({
   return (
     <button
       className={`${getVariantClasses()} ${sizeClasses[size]} ${className}`}
-      onClick={(e) => {
-        e.preventDefault();
-        if (!isButtonDisabled) handleAddToCart(e);
-      }}
+      onClick={handleAddToCart} 
       disabled={isButtonDisabled}
       aria-label="Add to cart"
       title={wouldExceedStock() ? `Maximum stock (${stock}) reached` : ""}
     >
       {showIcon && (isLoading ? 
-        <Loader2 size={size === "lg" ? 20 : 16} className="animate-spin" /> : 
-        <ShoppingCart size={size === "lg" ? 20 : 16} />
+        <Loader2 size={size === "lg" ? 18 : 14} className="animate-spin" /> : 
+        <ShoppingCart size={size === "lg" ? 18 : 14} />
       )}
-      {getButtonText()}
+      <span className="truncate">{getButtonText()}</span>
     </button>
   );
 }
