@@ -27,7 +27,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <div className="bg-white py-7">
-      <AnnouncementBar />
+      {/* <AnnouncementBar /> */}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Breadcrumb productTitle={product?.title} />
@@ -42,21 +42,12 @@ export default async function ProductPage({ params }) {
           </div>
 
           <div className="lg:pl-8">
-            <ProductHeader product={product} />
-            <ProductPricing product={product} />
+            <ProductHeader product={product_serialize} />
+            <ProductPricing product={product_serialize} />
             <AddToCartSection product={product_serialize} />
             {/* <AddToCartSection product={product} /> */}
           </div>
         </div>
-
-        {/* <div className="grid gap-6 w-full md:grid-cols-2 md:gap-8">
-  <div className="bg-gray-50 rounded-lg p-6 shadow-md">
-    <ArtworkDetails />
-  </div>
-  <div className="bg-gray-50 rounded-lg p-6 shadow-md">
-    <TrustBadges />
-  </div>
-</div>    */}
 
 <div className="space-y-8 py-2">
             <ArtworkDetails product={product_serialize} />
@@ -66,7 +57,7 @@ export default async function ProductPage({ params }) {
 
      {/* Description, Reviews, and Related Sections */}
         <ProductDescription product={product_serialize} />
-        <ProductReviews product={product} />
+        <ProductReviews product={product_serialize} />
         <RelatedProducts categoryId={product?.categoryID} />
       </main>
 
@@ -77,16 +68,37 @@ export default async function ProductPage({ params }) {
 
 
 
+// function serializeFirestoreData(data) {
+//   if (!data) return null;
+  
+//   if (data instanceof Date) {
+//     return data.toISOString();
+//   }
+  
+//   // Handle Firestore Timestamp objects
+//   if (data.seconds !== undefined && data.nanoseconds !== undefined) {
+//     // Convert to ISO string date
+//     return new Date(data.seconds * 1000).toISOString();
+//   }
+  
+//   if (Array.isArray(data)) {
+//     return data.map(item => serializeFirestoreData(item));
+//   }
+  
+//   if (typeof data === 'object' && data !== null) {
+//     return Object.entries(data).reduce((acc, [key, value]) => {
+//       acc[key] = serializeFirestoreData(value);
+//       return acc;
+//     }, {});
+//   }
+  
+//   return data;
+// }
 function serializeFirestoreData(data) {
   if (!data) return null;
   
-  if (data instanceof Date) {
-    return data.toISOString();
-  }
-  
-  // Handle Firestore Timestamp objects
-  if (data.seconds !== undefined && data.nanoseconds !== undefined) {
-    // Convert to ISO string date
+  // Handle direct Firestore Timestamp objects
+  if (data && typeof data === 'object' && 'seconds' in data && 'nanoseconds' in data) {
     return new Date(data.seconds * 1000).toISOString();
   }
   
@@ -95,10 +107,11 @@ function serializeFirestoreData(data) {
   }
   
   if (typeof data === 'object' && data !== null) {
-    return Object.entries(data).reduce((acc, [key, value]) => {
-      acc[key] = serializeFirestoreData(value);
-      return acc;
-    }, {});
+    const serialized = {};
+    for (const [key, value] of Object.entries(data)) {
+      serialized[key] = serializeFirestoreData(value);
+    }
+    return serialized;
   }
   
   return data;

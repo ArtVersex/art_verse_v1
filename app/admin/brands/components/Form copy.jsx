@@ -1,3 +1,182 @@
+// "use client";
+// import { UploadCloud } from "lucide-react";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import { useEffect, useState } from "react";
+// import toast from "react-hot-toast";
+// import Spinner from "../../spinner";
+// import { createNewBrand, updateBrand } from "@/lib/firestore/brands/write";
+// import { getBrands } from "@/lib/firestore/brands/read_server";
+
+// export default function Form() {
+//     const [data, setData] = useState({});
+//     const [image, setImage] = useState();
+//     const [isLoading, setisLoading] = useState(false);
+
+//     const searchParams = useSearchParams();
+//     const id = searchParams.get('id');
+
+//     const router = useRouter();
+
+//     const fetchdata = async () => {
+
+//         try {
+//             const res = await getBrands({ id: id });
+//             if (!res) {
+//                 toast.error("Brand Not Found!");
+//             }
+//             else {
+//                 setData(res);
+//             }
+//         } catch (error) {
+//             toast.error(error.message);
+//         }
+//     }
+
+//     useEffect(() => {
+//         if (id) {
+//             fetchdata();
+//         }
+
+//     }, [id])
+
+
+//     const handleData = (key, value) => {
+//         setData((prevData) => ({
+//             ...(prevData ?? {}),
+//             [key]: value,  // Corrected Typo
+//         }));
+//     };
+
+//     const handleFileChange = (e) => {
+//         const file = e.target.files[0];
+//         if (file) setImage(file); // Correct: Save the file object
+//     };
+
+//     const handleCreate = async () => {
+//         try {
+//             setisLoading(true);
+//             await createNewBrand({ data, image });
+//             toast.success("Successfully created!");
+//             setData({});
+//             setImage(null);
+//         } catch (error) {
+//             toast.error(error?.message || "An unexpected error occurred.");
+//         } finally {
+//             setisLoading(false);  // Ensures loading state resets even on error
+//         }
+//     };
+
+//     const handleUpdate = async () => {
+//         try {
+//             setisLoading(true);
+//             await updateBrand({ data, image });
+//             toast.success("Successfully Updated!");
+//             setData({});
+//             setImage(null);
+//             router.push('/admin/brands')
+//         } catch (error) {
+//             toast.error(error?.message || "An unexpected error occurred.");
+//         } finally {
+//             setisLoading(false);  // Ensures loading state resets even on error
+//         }
+//     };
+
+//     return (
+//         <div className="flex flex-col gap-3 bg-white rounded-xl p-5 w-full md:w-[400px] shadow-md">
+//             <h1 className="font-bold text-lg">{id ? "Update" : "Create"} Brand</h1>
+
+//             <form
+//                 onSubmit={(e) => {
+//                     {
+//                         e.preventDefault();
+//                         if (id) {
+//                             handleUpdate();
+//                         }
+//                         else {
+//                             handleCreate();
+//                         }
+
+//                     }
+//                 }}
+//                 className="flex flex-col gap-4 item"
+//             >
+
+//                 {/* Custom File Upload Section */}
+//                 <div className="flex flex-col gap-1">
+//                     <label htmlFor="brand-image" className="text-gray-600 text-sm">
+//                         Image <span className="text-red-500">*</span>
+//                     </label>
+//                     <div
+//                         className="border border-gray-300 px-4 py-6 rounded-lg w-full
+//                         flex items-center gap-3 text-gray-500 cursor-pointer
+//                         hover:bg-blue-50 hover:text-blue-500 transition-all"
+//                     >
+//                         <UploadCloud size={24} />
+//                         <label htmlFor="brand-image" className="cursor-pointer w-full">
+//                             {image ? image.name : "Click to upload or drag & drop an image"}
+//                         </label>
+//                         <input
+//                             id="brand-image"
+//                             name="brand Image"
+//                             type="file"
+//                             className="hidden"
+//                             onChange={handleFileChange}
+//                         />
+//                     </div>
+
+//                     {/* Image Preview */}
+//                     {image && (
+//                         <div className="flex justify-center items-center p-3">
+//                             <img
+//                                 src={URL.createObjectURL(image)}
+//                                 alt="Uploaded Preview"
+//                                 className="h-20"
+//                             />
+
+//                         </div>
+//                     )}
+//                 </div>
+
+//                 {/* Name Field */}
+//                 <div className="flex flex-col gap-1">
+//                     <label htmlFor="brand-name" className="text-gray-600 text-sm">
+//                         Name <span className="text-red-500">*</span>
+//                     </label>
+//                     <input
+//                         id="brand-name"
+//                         name="brand Name"
+//                         type="text"
+//                         placeholder="Enter Name"
+//                         value={data?.name ?? ""}
+//                         onChange={(e) => handleData("name", e.target.value)}
+//                         className="border border-gray-300 px-4 py-2 rounded-lg w-full
+//                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+//                     />
+//                 </div>
+
+
+//                 <button
+//                     type="submit"
+//                     disabled={isLoading}
+//                     className={`flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-lg gap-3 
+//     transition-all ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}`}
+//                 >
+//                     {isLoading ? (
+//                         <>
+//                             <Spinner size={5} />
+//                             {id ? "Updating..." : "Creating..."}
+//                         </>
+//                     ) : (
+//                         id ? "Update" : "Create"
+//                     )}
+//                 </button>
+//             </form>
+//         </div>
+//     );
+// }
+
+
+
 "use client";
 import {
     UploadCloud,
@@ -13,9 +192,10 @@ import {
     Award,
     Palette,
     Layers,
+    Wrench ,
     Book,
     Image,
-    Wrench
+    WrenchIcon
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -452,7 +632,7 @@ export default function VisualArtistForm() {
                         </div>
 
                         {/* Specialties & Mediums */}
-                        <div className="grid grid-cols-1 md:grid-cols-1 gap-1">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Specialties */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-medium flex items-center gap-2">
@@ -494,7 +674,7 @@ export default function VisualArtistForm() {
                             {/* Mediums */}
                             <div className="flex flex-col gap-2">
                                 <label className="text-gray-700 font-medium flex items-center gap-2">
-                                    <Wrench size={18} /> Mediums <span className="text-red-500">*</span>
+                                    <WrenchIcon size={18} /> Mediums <span className="text-red-500">*</span>
                                 </label>
                                 <div className="flex items-center gap-2">
                                     <select
@@ -611,7 +791,7 @@ export default function VisualArtistForm() {
                         <Award size={18} className="text-purple-600" /> Professional Information
                     </h2>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Exhibitions */}
                         <div className="flex flex-col gap-2">
                             <label className="text-gray-700 font-medium">
@@ -700,7 +880,7 @@ export default function VisualArtistForm() {
                                     value={currentAward}
                                     onChange={(e) => setCurrentAward(e.target.value)}
                                     className="border border-gray-300 px-3 py-2 rounded-lg flex-grow
-                                    focus:outline-none focus:ring-2 focus:ring-purple-400"
+            focus:outline-none focus:ring-2 focus:ring-purple-400"
                                 />
                                 <button
                                     type="button"
@@ -725,108 +905,102 @@ export default function VisualArtistForm() {
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </div>
+                        {/* Portfolio Images Section */}
+                        <div className="flex flex-col gap-4 p-5 bg-violet-50 rounded-lg border border-violet-100 mt-6">
+                            <h2 className="font-semibold text-lg text-gray-800 flex items-center gap-2">
+                                <Layers size={18} className="text-purple-600" /> Portfolio Images
+                            </h2>
 
-                {/* Portfolio Images Section */}
-                <div className="flex flex-col gap-4 p-5 bg-violet-50 rounded-lg border border-violet-100">
-                    <h2 className="font-semibold text-lg text-gray-800 flex items-center gap-2">
-                        <Layers size={18} className="text-purple-600" /> Portfolio Images
-                    </h2>
+                            <div className="flex flex-col gap-3">
+                                <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 hover:bg-purple-50 transition-all cursor-pointer">
+                                    <div className="flex flex-col items-center gap-2 text-center">
+                                        <UploadCloud size={36} className="text-purple-500" />
+                                        <label htmlFor="portfolio-images" className="cursor-pointer text-purple-600 font-medium">
+                                            Upload artwork images
+                                        </label>
+                                        <p className="text-sm text-gray-500">Select multiple files to showcase the artist's work</p>
+                                        <input
+                                            id="portfolio-images"
+                                            name="portfolio-images"
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            className="hidden"
+                                            onChange={handleMultipleFileChange}
+                                        />
+                                    </div>
+                                </div>
 
-                    <div className="flex flex-col gap-3">
-                        <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 hover:bg-purple-50 transition-all cursor-pointer">
-                            <div className="flex flex-col items-center gap-2 text-center">
-                                <UploadCloud size={36} className="text-purple-500" />
-                                <label htmlFor="portfolio-images" className="cursor-pointer text-purple-600 font-medium">
-                                    Upload artwork images
-                                </label>
-                                <p className="text-sm text-gray-500">Select multiple files to showcase the artist's work</p>
-                                <input
-                                    id="portfolio-images"
-                                    name="portfolio-images"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    className="hidden"
-                                    onChange={handleMultipleFileChange}
-                                />
+                                {/* Portfolio Images Preview */}
+                                {portfolioImages.length > 0 && (
+                                    <div className="mt-4">
+                                        <h3 className="text-sm font-medium text-gray-700 mb-2">Selected Portfolio Images ({portfolioImages.length})</h3>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                                            {portfolioImages.map((image, index) => (
+                                                <div key={index} className="relative group">
+                                                    <img
+                                                        src={URL.createObjectURL(image)}
+                                                        alt={`Portfolio image ${index + 1}`}
+                                                        className="h-24 w-full object-cover rounded-lg border-2 border-purple-200"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removePortfolioImage(index)}
+                                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                    <p className="text-xs text-gray-500 mt-1 truncate">{image.name}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Portfolio Images Preview */}
-                        {portfolioImages.length > 0 && (
-                            <div className="mt-4">
-                                <h3 className="text-sm font-medium text-gray-700 mb-2">Selected Portfolio Images ({portfolioImages.length})</h3>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                    {portfolioImages.map((image, index) => (
-                                        <div key={index} className="relative group">
-                                            <img
-                                                src={URL.createObjectURL(image)}
-                                                alt={`Portfolio image ${index + 1}`}
-                                                className="h-24 w-full object-cover rounded-lg border-2 border-purple-200"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removePortfolioImage(index)}
-                                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                &times;
-                                            </button>
-                                            <p className="text-xs text-gray-500 mt-1 truncate">{image.name}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                        {/* Verification Status - Admin Only */}
+                        <div className="flex items-center gap-3 mt-4">
+                            <input
+                                id="verification-status"
+                                name="verification-status"
+                                type="checkbox"
+                                checked={data?.isVerified ?? false}
+                                onChange={(e) => handleData("isVerified", e.target.checked)}
+                                className="h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="verification-status" className="text-gray-700 font-medium">
+                                Verified Artist
+                            </label>
+                            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Admin Only</span>
+                        </div>
 
-                {/* Verification Status - Admin Only */}
-                <div className="flex items-center gap-3 mt-4">
-                    <input
-                        id="verification-status"
-                        name="verification-status"
-                        type="checkbox"
-                        checked={data?.isVerified ?? false}
-                        onChange={(e) => handleData("isVerified", e.target.checked)}
-                        className="h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor="verification-status" className="text-gray-700 font-medium">
-                        Verified Artist
-                    </label>
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Admin Only</span>
-                </div>
+{/* Form Actions */}
+<div className="flex justify-end gap-3 mt-8">
+    <button
+        type="button"
+        onClick={() => router.push('/admin/artists')}
+        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+    >
+        Cancel
+    </button>
 
-                {/* Form Actions */}
-                <div className="flex justify-end gap-3 mt-8">
-                    <button
-                        type="button"
-                        onClick={() => router.push('/admin/artists')}
-                        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className={`flex items-center justify-center bg-purple-600 text-white px-8 py-3 rounded-lg gap-3 
-                            font-medium shadow-sm hover:bg-purple-700 transition-all ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
-                    >
-                        {isLoading ? (
-                            <>
-                                <Spinner size={5} />
-                                {id ? "Updating Artist..." : "Creating Artist..."}
-                            </>
-                        ) : (
-                            <>
-                                {id ? "Update Artist" : "Create Artist"}
-                            </>
-                        )}
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
-}
+    <button
+        type="submit"
+        disabled={isLoading}
+        className={`flex items-center justify-center bg-purple-600 text-white px-8 py-3 rounded-lg gap-3 
+font-medium shadow-sm hover:bg-purple-700 transition-all ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+    >
+        {isLoading ? (
+            <>
+                <Spinner size={5} />
+                {id ? "Updating Artist..." : "Creating Artist..."}
+            </>
+        ) : (
+            <>
+                {id ? "Update Artist" : "Create Artist"}
+            </>
+        )}
+    </button>
+</div>
+</form>

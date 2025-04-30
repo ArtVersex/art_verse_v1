@@ -1,30 +1,103 @@
-import { collection, deleteDoc, doc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
-import { db, storage } from "../firebase"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { collection, deleteDoc, doc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { db, storage } from "../firebase";
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
 
-export const createNewBrand = async ({ data, image }) => {
-    if (!image) {
-        throw new Error("Image is Required")
+export const createNewBrand = async ({ data, profileImage, bannerImage, portfolioImages }) => {
+    if (!profileImage) {
+        throw new Error("Profile image is required");
     }
     if (!data?.name) {
-        throw new Error("Name is required")
+        throw new Error("Name is required");
     }
 
-    const newId = doc(collection(db, `brands`)).id;
+    const newId = doc(collection(db, "brands")).id;
 
-    let imageRef = ref(storage, `brands/${newId}`);
+    // Upload profile image (now saved as imageUrl)
+    const profileImageRef = ref(storage, `brands/${id}_${profileImage.name}`);
+    await uploadBytes(profileImageRef, profileImage);
+    const imageUrl = await getDownloadURL(profileImageRef);
 
-    await uploadBytes(imageRef, image)
+    // Upload banner image if provided
+    let bannerImageUrl = "";
+    if (bannerImage) {
+        const bannerImageRef = ref(storage, `brands/${id}_${bannerImage.name}`);
+        await uploadBytes(bannerImageRef, bannerImage);
+        bannerImageUrl = await getDownloadURL(bannerImageRef);
+    }
 
-    const imageUrl = await getDownloadURL(imageRef)
+    // Upload portfolio images if provided
+    const portfolioImageUrls = [];
+    if (portfolioImages?.length > 0) {
+        for (let i = 0; i < portfolioImages.length; i++) {
+            const portfolioImageRef = ref(storage, `brands/${id}_portfolio_${Date.now()}_${i}`);
+            await uploadBytes(portfolioImageRef, portfolioImages[i]);
+            const url = await getDownloadURL(portfolioImageRef);
+            portfolioImageUrls.push(url);
+        }
+    }
 
     await setDoc(doc(db, `brands/${newId}`), {
         ...data,
         id: newId,
-        imageUrl: imageUrl,
+        imageUrl, // Changed from profileImageUrl to imageUrl
+        bannerImageUrl: bannerImageUrl || null,
+        portfolioImageUrls,
         timestampCreate: Timestamp.now(),
-    })
-}
+        timestampUpdate: Timestamp.now(),
+    });
+
+    return newId;
+};
+
+export const updateBrand = async ({ data, profileImage, bannerImage, portfolioImages }) => {
+    if (!data?.name) {
+        throw new Error("Name is required");
+    }
+    if (!data?.id) {
+        throw new Error("ID is required");
+    }
+
+    const id = data.id;
+    let imageUrl = data.imageUrl; // Changed from profileImageUrl to imageUrl
+    let bannerImageUrl = data.bannerImageUrl;
+    let portfolioImageUrls = data.portfolioImageUrls || [];
+
+    // Upload new profile image if provided
+    if (profileImage) {
+        const profileImageRef = ref(storage, `brands/${id}_${profileImage.name}`);
+        await uploadBytes(profileImageRef, profileImage);
+        imageUrl = await getDownloadURL(profileImageRef);
+    }
+
+    // Upload new banner image if provided
+    if (bannerImage) {
+        const bannerImageRef = ref(storage, `brands/${id}_${bannerImage.name}`);
+        await uploadBytes(bannerImageRef, bannerImage);
+        bannerImageUrl = await getDownloadURL(bannerImageRef);
+    }
+
+    // Handle portfolio images
+    if (portfolioImages?.length > 0) {
+        const newPortfolioUrls = [];
+        for (let i = 0; i < portfolioImages.length; i++) {
+            const portfolioImageRef = ref(storage, `brands/${id}_portfolio_${Date.now()}_${i}`);
+            await uploadBytes(portfolioImageRef, portfolioImages[i]);
+            const url = await getDownloadURL(portfolioImageRef);
+            newPortfolioUrls.push(url);
+        }
+        portfolioImageUrls = [...portfolioImageUrls, ...newPortfolioUrls];
+    }
+
+    await updateDoc(doc(db, `brands/${id}`), {
+        ...data,
+        imageUrl, // Changed from profileImageUrl to imageUrl
+        bannerImageUrl: bannerImageUrl || null,
+        portfolioImageUrls,
+        timestampUpdate: Timestamp.now(),
+    });
+};
+
+// deleteBrand remains the same
 
 export const deleteBrand = async ({ id }) => {
     if (!id) {
@@ -34,26 +107,3 @@ export const deleteBrand = async ({ id }) => {
     await deleteDoc(doc(db, `brands/${id}`))
 }
 
-
-export const updateBrand = async ({ data, image }) => {
-    if (!data?.name) {
-        throw new Error("Name is required")
-    }
-    if (!data?.id) {
-        throw new Error("ID is required")
-    }
-    const id = data?.id;
-
-    let imageUrl = data?.imageUrl;
-
-    if (image) {
-        let imageRef = ref(storage, `brands/${id}`);
-        await uploadBytes(imageRef, image)
-        imageUrl = await getDownloadURL(imageRef)
-    }
-    await updateDoc(doc(db, `brands/${id}`), {
-        ...data,
-        imageUrl: imageUrl,
-        timestampUpdate: Timestamp.now(),
-    })
-}
