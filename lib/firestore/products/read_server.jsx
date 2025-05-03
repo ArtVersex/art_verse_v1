@@ -14,9 +14,18 @@ export const getProduct = async ({id}) =>{
 
 export const getFeaturedProducts = async ()=>{
     const list = await getDocs(
-        query(collection(db, "products"), where("isFeatured", "==" , true ))
+        query(collection(db, "products"), where("isFeatured", "==", true))
     );
-    return list.docs.map((snap) => snap.data());
+    
+    const products = list.docs.map((snap) => ({
+        id: snap.id,  // Including the document ID is critical
+        ...snap.data()
+    }));
+    
+    console.log(`Found ${products.length} featured products`);
+    
+    return products;
+
 }
 
 export const getProducts = async ({ limit = null } = {}) => {
@@ -35,29 +44,6 @@ export const getProducts = async ({ limit = null } = {}) => {
     return list.docs.map((snap) => snap.data());
   }
 
-// export const getProducts = async ()=>{
-//     const list = await getDocs(query(collection(db, "products"), orderBy('timestampcreate','desc'))
-// );
-//     return list.docs.map((snap) => snap.data());
-// }
-
-// export const getProductByCategory = async ({categoryId})=>{
-//     const list = await getDocs(query(collection(db, "products"), orderBy('timestampcreate','desc'), where("categoryID", "==", categoryId))
-// );
-//     return list.docs.map((snap) => snap.data());
-// }
-
-// export const getProductByCategory = async ({ categoryId }) => {
-//     const list = await getDocs(
-//         query(
-//             collection(db, "products"), 
-//             where("categoryID", "==", categoryId), // 🔹 'where()' should come first
-//             orderBy("timestampcreate", "desc")     // 🔹 'orderBy()' should come after
-//         )
-//     );
-
-//     return list.docs.map((snap) => snap.data());
-// };
 
 export const getProductByCategory = async ({ categoryId }) => {
     if (!categoryId) {
@@ -109,41 +95,3 @@ export const getProductByBrand = async ({ brandId }) => {
         };
     });
 };
-
-
-
-// export const getProductByBrand = async ({ brandId }) => {
-//     console.log("Attempting to fetch products with brandId:", brandId);
-    
-//     if (!brandId) {
-//       console.error("Error: brandId is undefined or invalid");
-//       return [];
-//     }
-    
-//     try {
-//       const productsRef = collection(db, "products");
-//       console.log("Collection reference created");
-      
-//       const q = query(
-//         productsRef,
-//         where("brandID", "==", brandId),
-//         orderBy("timestampcreate", "desc")
-//       );
-//       console.log("Query created");
-      
-//       const list = await getDocs(q);
-//       console.log(`Query executed, found ${list.docs.length} documents`);
-      
-//       return list.docs.map((snap) => {
-//         const data = snap.data();
-//         return {
-//           ...data,
-//           timestampcreate: data.timestampcreate?.toDate().toISOString() || null,
-//           timestampUpdate: data.timestampUpdate?.toDate().toISOString() || null
-//         };
-//       });
-//     } catch (error) {
-//       console.error("Error fetching products by brand:", error);
-//       return [];
-//     }
-//   };

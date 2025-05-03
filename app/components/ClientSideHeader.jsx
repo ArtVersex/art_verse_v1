@@ -281,12 +281,12 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
               <span className={`hidden sm:block ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-purple-700 ${
                 scrolled ? "text-base" : "text-lg"
               } tracking-wider transition-all duration-300`}>
-                ART Verse-X
+                Aart Verse
               </span>
               
               {/* Mobile brand name with artistic touch */}
               <span className="sm:hidden ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 text-base tracking-wide">
-                ART Verse-X
+                Aart Verse
               </span>
             </Link>
 

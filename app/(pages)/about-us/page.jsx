@@ -19,7 +19,7 @@ const AboutUs = () => {
                     </h1>
                     <div className="h-1 w-20 bg-gradient-to-r from-purple-500 to-indigo-500 mx-auto rounded-full mb-6"></div>
                     <p className="text-lg text-gray-200 max-w-2xl mx-auto">
-                        Welcome to <span className="font-semibold text-indigo-300">Art VerseX</span>, a sanctuary where creativity meets purpose. 
+                        Welcome to <span className="font-semibold text-indigo-300">Aart VerseX</span>, a sanctuary where creativity meets purpose. 
                         We believe in the transformative power of art to inspire, connect, and make a lasting impact on the world.
                     </p>
                 </div>
@@ -30,7 +30,7 @@ const AboutUs = () => {
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/30 transform transition-all hover:shadow-2xl hover:-translate-y-1">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Story</h2>
                         <p className="text-gray-700 mb-4">
-                            <span className="font-semibold text-indigo-600">Art VerseX</span> was born in 2020 from a collective passion of artists who believed that art should be both accessible and meaningful. What began as a small exhibition in a local community space has evolved into a dynamic platform that connects creators and art lovers across the globe.
+                            <span className="font-semibold text-indigo-600">Aart VerseX</span> was born in 2020 from a collective passion of artists who believed that art should be both accessible and meaningful. What began as a small exhibition in a local community space has evolved into a dynamic platform that connects creators and art lovers across the globe.
                         </p>
                         <p className="text-gray-700">
                             Our journey has been shaped by a commitment to authenticity and innovation, pushing boundaries while honoring artistic traditions. Through challenges and triumphs, we've remained dedicated to our core vision: creating a space where art transcends the ordinary and inspires meaningful connection.
@@ -41,7 +41,7 @@ const AboutUs = () => {
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/30 transform transition-all hover:shadow-2xl hover:-translate-y-1">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Vision</h2>
                         <p className="text-gray-700">
-                            At <span className="font-semibold text-indigo-600">Art VerseX</span>, we offer a diverse collection of artwork 
+                            At <span className="font-semibold text-indigo-600">Aart VerseX</span>, we offer a diverse collection of artwork 
                             spanning multiple styles and mediums. Each piece is crafted with meticulous attention to detail, reflecting 
                             a deep connection to the world around us. From abstract expressions to intricate realism, our work aims to 
                             evoke emotions, spark conversations, and bring beauty into everyday life.
@@ -86,7 +86,7 @@ const AboutUs = () => {
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/30 transform transition-all hover:shadow-2xl hover:-translate-y-1">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">What Makes Us Unique</h2>
                         <p className="text-gray-700 mb-4">
-                            <span className="font-semibold text-indigo-600">Art VerseX</span> stands apart through our commitment to blending traditional artistic techniques with cutting-edge digital innovation. We've pioneered a process we call "Dimensional Translation," where classical art principles are reimagined through modern technological approaches.
+                            <span className="font-semibold text-indigo-600">Aart VerseX</span> stands apart through our commitment to blending traditional artistic techniques with cutting-edge digital innovation. We've pioneered a process we call "Dimensional Translation," where classical art principles are reimagined through modern technological approaches.
                         </p>
                         <p className="text-gray-700">
                             Our collaborative studio model brings together artists from diverse backgrounds and disciplines, creating unexpected synergies and fresh perspectives. This cross-pollination of ideas allows us to create work that exists at the intersection of multiple art worlds—neither purely traditional nor exclusively contemporary, but thoughtfully balanced between heritage and innovation.
@@ -120,7 +120,7 @@ const AboutUs = () => {
                 <div className="mt-12 text-center bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/30">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-4">Join Our Community</h2>
                     <p className="text-gray-700 mb-6">
-                        Thank you for visiting <span className="font-semibold text-indigo-600">Art VerseX</span>. Together, let's celebrate the beauty 
+                        Thank you for visiting <span className="font-semibold text-indigo-600">Aart VerseX</span>. Together, let's celebrate the beauty 
                         and power of art to shape a better world. Sign up for our newsletter to stay informed about upcoming exhibitions, artist spotlights, and special events.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
