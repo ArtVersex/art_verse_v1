@@ -79,7 +79,7 @@ export default async function Home() {
     getFeaturedProducts(),
     getCollections(),
     getCategories(),
-    getProducts({ limit: 6 }), // Reduced from 10 to 6 for better mobile performance
+    getProducts({ limit: 8 }), // Reduced from 10 to 6 for better mobile performance
     getAllBrands()
   ]);
 
@@ -97,7 +97,7 @@ export default async function Home() {
         <FeaturedProductSlider featuredProducts={featuredProducts} />
         <Collections collections={collections} />
         <Categories categories={categories} />
-        <ProductsGridView products={products} initialDisplayCount={6} /> {/* Reduced initial display count */}
+        <ProductsGridView products={products} initialDisplayCount={8} /> {/* Reduced initial display count */}
         
         {/* Artistic Gallery Link Section - Mobile Optimized */}
         <div className="max-w-screen-xl mx-auto px-4 py-8 sm:py-16 relative">

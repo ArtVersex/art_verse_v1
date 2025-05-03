@@ -127,7 +127,7 @@ async function Brand({ brandId }) {
   if (!brand) return null;
 
   return (
-    <Link href={`/brands/${brand.id}`} className="hover:opacity-80 transition-opacity">
+    <Link href={`/artists/${brand.id}`} className="hover:opacity-80 transition-opacity">
       <div className="flex gap-1 items-center border border-stone-200 px-2 py-1 md:px-3 md:py-1 rounded-full bg-stone-50 hover:bg-stone-100 transition-colors shadow-sm">
         {brand.imageUrl && (
           <img

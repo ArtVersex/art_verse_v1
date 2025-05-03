@@ -83,3 +83,67 @@ export const getProductByCategory = async ({ categoryId }) => {
         };
     });
 };
+
+
+export const getProductByBrand = async ({ brandId }) => {
+    if (!brandId) {
+        console.error("Error: brandId is undefined or invalid");
+        return [];
+    }
+
+    const list = await getDocs(
+        query(
+            collection(db, "products"),
+            where("brandID", "==", brandId),
+            orderBy("timestampcreate", "desc")
+        )
+    );
+
+    return list.docs.map((snap) => {
+        const data = snap.data();
+
+        return {
+            ...data,
+            timestampcreate: data.timestampcreate?.toDate().toISOString() || null,
+            timestampUpdate: data.timestampUpdate?.toDate().toISOString() || null
+        };
+    });
+};
+
+
+
+// export const getProductByBrand = async ({ brandId }) => {
+//     console.log("Attempting to fetch products with brandId:", brandId);
+    
+//     if (!brandId) {
+//       console.error("Error: brandId is undefined or invalid");
+//       return [];
+//     }
+    
+//     try {
+//       const productsRef = collection(db, "products");
+//       console.log("Collection reference created");
+      
+//       const q = query(
+//         productsRef,
+//         where("brandID", "==", brandId),
+//         orderBy("timestampcreate", "desc")
+//       );
+//       console.log("Query created");
+      
+//       const list = await getDocs(q);
+//       console.log(`Query executed, found ${list.docs.length} documents`);
+      
+//       return list.docs.map((snap) => {
+//         const data = snap.data();
+//         return {
+//           ...data,
+//           timestampcreate: data.timestampcreate?.toDate().toISOString() || null,
+//           timestampUpdate: data.timestampUpdate?.toDate().toISOString() || null
+//         };
+//       });
+//     } catch (error) {
+//       console.error("Error fetching products by brand:", error);
+//       return [];
+//     }
+//   };
