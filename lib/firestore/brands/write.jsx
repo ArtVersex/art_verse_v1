@@ -13,14 +13,14 @@ export const createNewBrand = async ({ data, profileImage, bannerImage, portfoli
     const newId = doc(collection(db, "brands")).id;
 
     // Upload profile image (now saved as imageUrl)
-    const profileImageRef = ref(storage, `brands/${id}_${profileImage.name}`);
+    const profileImageRef = ref(storage, `brands/${newId}_${profileImage.name}`);
     await uploadBytes(profileImageRef, profileImage);
     const imageUrl = await getDownloadURL(profileImageRef);
 
     // Upload banner image if provided
     let bannerImageUrl = "";
     if (bannerImage) {
-        const bannerImageRef = ref(storage, `brands/${id}_${bannerImage.name}`);
+        const bannerImageRef = ref(storage, `brands/${newId}_${bannerImage.name}`);
         await uploadBytes(bannerImageRef, bannerImage);
         bannerImageUrl = await getDownloadURL(bannerImageRef);
     }
@@ -29,7 +29,7 @@ export const createNewBrand = async ({ data, profileImage, bannerImage, portfoli
     const portfolioImageUrls = [];
     if (portfolioImages?.length > 0) {
         for (let i = 0; i < portfolioImages.length; i++) {
-            const portfolioImageRef = ref(storage, `brands/${id}_portfolio_${Date.now()}_${i}`);
+            const portfolioImageRef = ref(storage, `brands/${newId}_portfolio_${Date.now()}_${i}`);
             await uploadBytes(portfolioImageRef, portfolioImages[i]);
             const url = await getDownloadURL(portfolioImageRef);
             portfolioImageUrls.push(url);

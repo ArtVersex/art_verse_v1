@@ -44,7 +44,8 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
   }, [userData?.cart]);
 
   // Handle navigation with menu closing
-  const handleMobileNavigation = (path) => {
+  const handleMobileNavigation = (e, path) => {
+    e.preventDefault();
     setIsMenuOpen(false);
     
     // Wait for menu animation before navigating
@@ -152,10 +153,11 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
     const showCartBadge = isCartIcon && cartItemsCount > 0;
     
     return (
-      <button 
+      <Link 
         key={index} 
-        onClick={() => handleMobileNavigation(item.link)}
-        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 relative overflow-hidden group py-2 w-full text-left"
+        href={item.link} 
+        onClick={(e) => handleMobileNavigation(e, item.link)}
+        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 relative overflow-hidden group py-2"
         onMouseEnter={() => setHoverItem(item.icon)}
         onMouseLeave={() => setHoverItem(null)}
       >
@@ -199,36 +201,7 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
         
         {/* Subtle color splash effect on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left opacity-20"></div>
-      </button>
-    );
-  };
-
-  // Render mobile menu items with artistic styling
-  const renderMobileMenuItem = (item, index) => {
-    return (
-      <button 
-        key={index} 
-        onClick={() => handleMobileNavigation(item.link)}
-        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 py-2 group relative w-full text-left"
-      >
-        {/* Icon with artistic container */}
-        <div className="p-2 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden group-hover:bg-blue-100 transition-colors duration-300">
-          {getIcon(item.icon)}
-          
-          {/* Artistic splatter effect */}
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute -top-2 -left-2 w-4 h-4 bg-blue-200 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-purple-200 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-          </div>
-        </div>
-        
-        {/* Text with artistic highlight effect */}
-        <span className="relative">
-          {item.name}
-          {/* Brush stroke underline effect */}
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 group-hover:w-full transition-all duration-300"></span>
-        </span>
-      </button>
+      </Link>
     );
   };
 
@@ -247,8 +220,8 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
       <nav 
         className={`fixed top-0 left-0 right-0 w-full z-40 transition-all duration-500 overflow-visible ${
           scrolled 
-            ? "py-0.5 backdrop-blur-md shadow-lg" 
-            : "py-2"
+            ? "py-1 backdrop-blur-md shadow-lg" 
+            : "py-3"
         } ${
           isVisible
             ? "transform translate-y-0" 
@@ -260,14 +233,14 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
         {backgroundShape}
         
         {/* Content wrapper */}
-        <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
-          <div className="flex items-center justify-between h-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center justify-between h-12">
             {/* Logo with animation */}
             <Link href="/" className="flex-shrink-0 flex items-center group relative">
               <div className="overflow-hidden relative">
                 <img
                   className={`transition-all duration-500 ${
-                    scrolled ? "h-5" : "h-7"
+                    scrolled ? "h-6" : "h-8"
                   } hover:scale-105 group-hover:opacity-100`}
                   src="/logo_v1.png"
                   alt="Logo"
@@ -279,13 +252,13 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
               
               {/* Brand name with artistic typography */}
               <span className={`hidden sm:block ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-purple-700 ${
-                scrolled ? "text-base" : "text-lg"
+                scrolled ? "text-lg" : "text-xl"
               } tracking-wider transition-all duration-300`}>
                 ART Verse-X
               </span>
               
               {/* Mobile brand name with artistic touch */}
-              <span className="sm:hidden ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 text-base tracking-wide">
+              <span className="sm:hidden ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 text-lg tracking-wide">
                 ART Verse-X
               </span>
             </Link>
@@ -321,14 +294,14 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
             {/* Action Buttons for Desktop with artistic effects */}
             <div className="hidden md:flex items-center space-x-1 lg:space-x-3">
               {actionButtons.map((item, index) => renderActionButton(item, index))}
-              {user ? <LogoutButton /> : null}
+              <LogoutButton />
             </div>
 
             {/* Mobile Menu Button with enhanced artistic animation */}
-            <div className="md:hidden">
+            <div ref={menuRef} className="md:hidden">
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-colors relative overflow-hidden group"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Toggle menu"
               >
                 <div className="relative z-10">
@@ -343,11 +316,10 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
         </div>
       </nav>
       
-      {/* Mobile Menu with animation - Fixed version */}
+      {/* Separate mobile menu that slides down instead of floating - fixes visibility issues */}
       {isMenuOpen && (
         <div 
-          ref={menuRef}
-          className="fixed top-10 inset-x-0 md:hidden bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out max-h-[calc(100vh-2.5rem)] overflow-y-auto"
+          className="fixed top-14 left-0 right-0 md:hidden bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out"
           style={{
             transformOrigin: "top",
             animation: `slideDown ${animationDuration}ms ease forwards`
@@ -370,12 +342,37 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
           </div>
 
           {/* Menu content */}
-          <div className="max-w-5xl mx-auto px-4 py-5 relative z-10">
+          <div className="max-w-6xl mx-auto px-6 py-6 relative z-10">
             <div className="flex flex-col space-y-5">
               {/* Main menu items with artistic styling */}
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2 border-b border-blue-100 pb-1">Navigation</h3>
-                {menuList.map((item, index) => renderMobileMenuItem(item, index))}
+                {menuList.map((item, index) => (
+                  <Link 
+                    key={index} 
+                    href={item.link} 
+                    onClick={(e) => handleMobileNavigation(e, item.link)}
+                    className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 py-2 group relative"
+                  >
+                    {/* Icon with artistic container */}
+                    <div className="p-2 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden group-hover:bg-blue-100 transition-colors duration-300">
+                      {getIcon(item.icon)}
+                      
+                      {/* Artistic splatter effect */}
+                      <div className="absolute top-0 left-0 w-full h-full">
+                        <div className="absolute -top-2 -left-2 w-4 h-4 bg-blue-200 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-purple-200 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Text with artistic highlight effect */}
+                    <span className="relative">
+                      {item.name}
+                      {/* Brush stroke underline effect */}
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+                    </span>
+                  </Link>
+                ))}
               </div>
               
               <div className="border-t border-gray-100 pt-3"></div>
@@ -386,37 +383,34 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
                 {actionButtons.map((item, index) => renderMobileActionButton(item, index))}
               </div>
               
-              {/* Login/Logout Button */}
+              {/* Artistic login button */}
               <div className="mt-3 pt-3 border-t border-gray-100">
-                {user ? (
-                  <LogoutButton className="w-full" />
-                ) : (
-                  <button 
-                    onClick={() => handleMobileNavigation("/login")}
-                    className="w-full px-5 py-3 text-center text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-105 relative group overflow-hidden"
-                  >
-                    {/* Button background with artistic gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:to-purple-600 transition-colors duration-300"></div>
-                    
-                    {/* Artistic brush stroke overlay */}
-                    <div className="absolute inset-0 opacity-20">
-                      <div className="absolute top-0 left-0 w-full h-2 bg-white opacity-10"></div>
-                      <div className="absolute bottom-0 right-0 w-full h-1 bg-black opacity-10"></div>
-                    </div>
-                    
-                    {/* Button content */}
-                    <div className="flex items-center justify-center gap-2 relative z-10">
-                      {getIcon("LogIn")}
-                      <span className="font-semibold tracking-wide">Sign In / Register</span>
-                    </div>
-                    
-                    {/* Paint splash effect animation - static to avoid hydration issues */}
-                    <div className="absolute top-0 left-0 w-full h-full">
-                      <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
-                      <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
-                    </div>
-                  </button>
-                )}
+                <Link 
+                  href="/login" 
+                  onClick={(e) => handleMobileNavigation(e, "/login")}
+                  className="block px-5 py-3 text-center text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-105 relative group overflow-hidden"
+                >
+                  {/* Button background with artistic gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:to-purple-600 transition-colors duration-300"></div>
+                  
+                  {/* Artistic brush stroke overlay */}
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 left-0 w-full h-2 bg-white opacity-10"></div>
+                    <div className="absolute bottom-0 right-0 w-full h-1 bg-black opacity-10"></div>
+                  </div>
+                  
+                  {/* Button content */}
+                  <div className="flex items-center justify-center gap-2 relative z-10">
+                    {getIcon("LogIn")}
+                    <span className="font-semibold tracking-wide">Sign In / Register</span>
+                  </div>
+                  
+                  {/* Paint splash effect animation - static to avoid hydration issues */}
+                  <div className="absolute top-0 left-0 w-full h-full">
+                    <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
+                    <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>

@@ -85,7 +85,7 @@ function BrandDisplay({ brandId }) {
   if (loading || !brand) return <span className="text-sm text-gray-500">{brandId}</span>;
 
   return (
-    <Link href={`/brands/${brand.id}`} className="hover:opacity-80 transition-opacity">
+    <Link href={`/artists/${brand.id}`} className="hover:opacity-80 transition-opacity">
       <div className="flex gap-1 items-center px-3 py-1 rounded-full bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 hover:from-amber-100 hover:to-orange-100 transition-all">
         {brand.imageUrl && (
           <img

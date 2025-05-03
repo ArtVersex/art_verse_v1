@@ -31,7 +31,7 @@ export default function CustomerReview() {
       message: "The artwork I purchased exceeded my expectations. The colors are even more vibrant in person than they appeared online. The brushwork reveals layers of meaning that only become apparent when viewing the piece in different lighting throughout the day. It's now the centerpiece of my living room and sparks conversation with every visitor.",
       rating: 5,
       date: "March 15, 2025",
-      image: "/api/placeholder/60/60"
+      image: "https://t4.ftcdn.net/jpg/10/54/09/27/240_F_1054092780_liObYQo10Pn2xOo4CmGYZMeWiw0P7CT2.jpg"
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ export default function CustomerReview() {
       message: "I've been following this artist for years and finally purchased my first piece. The attention to detail is remarkable—each stroke purposeful and deliberate. The composition achieves a perfect tension between chaos and structure, inviting repeated viewing. The shipping was fast and secure, with thoughtful packaging that showed great care for the work.",
       rating: 5,
       date: "March 10, 2025",
-      image: "/api/placeholder/60/60"
+      image: "https://t4.ftcdn.net/jpg/10/54/09/27/240_F_1054092780_liObYQo10Pn2xOo4CmGYZMeWiw0P7CT2.jpg"
     },
     {
       id: 3,
@@ -49,7 +49,7 @@ export default function CustomerReview() {
       message: "Beautiful work that captures emotion perfectly. The interplay of light and shadow creates a narrative that unfolds gradually. I find myself discovering new elements each time I engage with the piece. The artist was also very responsive to my questions before purchase, providing context that deepened my appreciation.",
       rating: 4,
       date: "February 28, 2025",
-      image: "/api/placeholder/60/60"
+      image: "https://t4.ftcdn.net/jpg/10/54/09/27/240_F_1054092780_liObYQo10Pn2xOo4CmGYZMeWiw0P7CT2.jpg"
     },
     {
       id: 4,
@@ -58,7 +58,7 @@ export default function CustomerReview() {
       message: "Unique style that stands out from other contemporary artists. The bold use of negative space and unexpected color combinations create a visual language that's immediately recognizable. The piece arrived slightly later than expected, but was well packaged and in perfect condition. Worth the wait for such an impactful addition to my collection.",
       rating: 4,
       date: "February 20, 2025",
-      image: "/api/placeholder/60/60"
+      image: "https://t4.ftcdn.net/jpg/10/54/09/27/240_F_1054092780_liObYQo10Pn2xOo4CmGYZMeWiw0P7CT2.jpg"
     }
   ];
 

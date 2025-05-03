@@ -338,6 +338,35 @@ export default function BasicDetails({data, handleData}){
                 />
             </div>
 
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-compositionAnalysis">Composition Analysis</label>
+                <input 
+                    type="text"
+                    placeholder="Composition Analysis"
+                    id="product-compositionAnalysis"
+                    name="product-compositionAnalysis"
+                    value={data?.compositionAnalysis ?? ""}
+                    onChange={(e) => {
+                        handleData("compositionAnalysis", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-culturalSignificance">Cultural Significance</label>
+                <input 
+                    type="text"
+                    placeholder="Cultural Significance"
+                    id="product-culturalSignificance"
+                    name="product-culturalSignificance"
+                    value={data?.culturalSignificance ?? ""}
+                    onChange={(e) => {
+                        handleData("culturalSignificance", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
 
 
 

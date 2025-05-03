@@ -43,15 +43,17 @@ export default function Collections({ collections }) {
     cssEase: "cubic-bezier(0.7, 0, 0.3, 1)"
   };
 
-  const getRandomGradients = () => {
+  // Instead of randomly choosing gradients at render time,
+  // use consistent gradients based on array index
+  const getGradientByIndex = (index) => {
     const gradients = [
-      "from-indigo-200 to-purple-100",
+      "from-fuchsia-100 to-cyan-100",
       "from-rose-100 to-teal-100",
       "from-amber-100 to-blue-100",
       "from-emerald-100 to-violet-100",
       "from-fuchsia-100 to-cyan-100"
     ];
-    return gradients[Math.floor(Math.random() * gradients.length)];
+    return gradients[index % gradients.length];
   };
 
   return (
@@ -71,7 +73,8 @@ export default function Collections({ collections }) {
       <div className={`transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
         <Slider {...settings}>
           {updatedProducts.map((product, index) => {
-            const gradient = getRandomGradients();
+            // Use consistent gradient based on index
+            const gradient = getGradientByIndex(index);
             return (
               <div key={product.id} className="px-2 py-3">
                 <div className={`bg-gradient-to-tr ${gradient} p-4 sm:p-6 rounded-2xl shadow-lg relative overflow-hidden group`}>

@@ -7,13 +7,14 @@ export const ArtworkDetails = async ({ product }) => {
   
   // Details with proper field mapping from your schema
   const details = {
-    artist: brand?.name || "Alexander Visionary",
-    medium: product?.subcategory || "Acrylic on Canvas", // Using subcategory as medium
-    dimensions: product?.dimensions || "24\" × 36\" (61cm × 91cm)",
+    artist: brand?.name || "Madhusudhan Sharma",
+    medium: product?.subcategory || "Not Specified", // Using subcategory as medium
+    dimensions: product?.dimensions || "Not Specified",
     year: product?.year || "2025",
     framing: product?.framing || "Unframed",
     certificate: product?.certificateNumber ? `Certificate #${product.certificateNumber}` : "Includes Authentication",
-    edition: product?.editionNumber || "Original (1 of 1)"
+    edition: <span> {product?.editionNumber} / {product?.totalEditionNumber}  </span> || "Original (1 of 1)"
+
   };
 
   return (

@@ -174,7 +174,7 @@ export default function VisualArtistForm() {
                 portfolioImages // Add portfolio images to the creation process
             });
             toast.success("Artist successfully created!");
-            router.push('/admin/artists');
+            router.push('/admin/brands');
         } catch (error) {
             toast.error(error?.message || "An unexpected error occurred.");
         } finally {
@@ -192,7 +192,7 @@ export default function VisualArtistForm() {
                 portfolioImages
             });
             toast.success("Artist Successfully Updated!");
-            router.push('/admin/artists');
+            router.push('/admin/brands');
         } catch (error) {
             toast.error(error?.message || "An unexpected error occurred.");
         } finally {

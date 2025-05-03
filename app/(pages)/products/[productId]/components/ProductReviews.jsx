@@ -7,6 +7,8 @@ export const ProductReviews = ({ product }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   // State for artistic insights
   const [showAllInsights, setShowAllInsights] = useState(false);
+  // State for active insight
+  const [activeInsight, setActiveInsight] = useState(null);
 
   // Mock critique data - in a real app, this would come from your backend
   const critiques = [
@@ -32,13 +34,90 @@ export const ProductReviews = ({ product }) => {
     }
   ];
 
-  // Artistic insights data
-  const artisticInsights = [
+  // Artistic insights data from product
+  // Check if product has the necessary insights properties
+  const artisticInsights = [];
+  
+  // Add technique highlight if available
+  if (product?.techniqueHighlight) {
+    artisticInsights.push({
+      id: 1,
+      type: "Technique Highlight",
+      typeClass: "text-amber-700",
+      bgClass: "bg-gradient-to-r from-amber-50 to-white border-amber-100",
+      iconClass: "text-amber-600",
+      text: product.techniqueHighlight
+    });
+  }
+  
+  // Add historical context if available
+  if (product?.historicalContext) {
+    artisticInsights.push({
+      id: 2,
+      type: "Historical Context",
+      typeClass: "text-indigo-700",
+      bgClass: "bg-gradient-to-r from-indigo-50 to-white border-indigo-100",
+      iconClass: "text-indigo-600",
+      text: product.historicalContext
+    });
+  }
+  
+  // Add color analysis if available
+  if (product?.colorAnalysis) {
+    artisticInsights.push({
+      id: 3,
+      type: "Color Analysis",
+      typeClass: "text-emerald-700",
+      bgClass: "bg-gradient-to-r from-emerald-50 to-white border-emerald-100",
+      iconClass: "text-emerald-600",
+      text: product.colorAnalysis
+    });
+  }
+  
+  // Add Symbolism if available
+  if (product?.Symbolism) {
+    artisticInsights.push({
+      id: 4,
+      type: "Symbolism",
+      typeClass: "text-rose-700",
+      bgClass: "bg-gradient-to-r from-rose-50 to-white border-rose-100",
+      iconClass: "text-rose-600",
+      text: product.Symbolism
+    });
+  }
+
+  // Add Composition Analysis as new insight type
+  if (product?.compositionAnalysis) {
+    artisticInsights.push({
+      id: 5,
+      type: "Composition Analysis",
+      typeClass: "text-blue-700",
+      bgClass: "bg-gradient-to-r from-blue-50 to-white border-blue-100",
+      iconClass: "text-blue-600",
+      text: product.compositionAnalysis
+    });
+  }
+
+  // Add Cultural Significance as new insight type
+  if (product?.culturalSignificance) {
+    artisticInsights.push({
+      id: 6,
+      type: "Cultural Significance",
+      typeClass: "text-purple-700",
+      bgClass: "bg-gradient-to-r from-purple-50 to-white border-purple-100",
+      iconClass: "text-purple-600",
+      text: product.culturalSignificance
+    });
+  }
+
+  // Fallback to default insights if none are provided in the product
+  const defaultInsights = [
     {
       id: 1,
       type: "Technique Highlight",
       typeClass: "text-amber-700",
       bgClass: "bg-gradient-to-r from-amber-50 to-white border-amber-100",
+      iconClass: "text-amber-600",
       text: "Notice the impasto technique used in the upper right corner, creating texture that catches the light in different ways depending on viewing angle."
     },
     {
@@ -46,6 +125,7 @@ export const ProductReviews = ({ product }) => {
       type: "Historical Context",
       typeClass: "text-indigo-700",
       bgClass: "bg-gradient-to-r from-indigo-50 to-white border-indigo-100",
+      iconClass: "text-indigo-600",
       text: "This piece draws inspiration from the post-impressionist movement while incorporating contemporary symbolic elements."
     },
     {
@@ -53,6 +133,7 @@ export const ProductReviews = ({ product }) => {
       type: "Color Analysis",
       typeClass: "text-emerald-700",
       bgClass: "bg-gradient-to-r from-emerald-50 to-white border-emerald-100",
+      iconClass: "text-emerald-600",
       text: "The artist's use of complementary colors creates visual tension while the muted palette invokes a sense of nostalgia."
     },
     {
@@ -60,15 +141,35 @@ export const ProductReviews = ({ product }) => {
       type: "Symbolism",
       typeClass: "text-rose-700",
       bgClass: "bg-gradient-to-r from-rose-50 to-white border-rose-100",
+      iconClass: "text-rose-600",
       text: "Recurring motifs throughout the composition suggest themes of transience and the passage of time."
+    },
+    {
+      id: 5,
+      type: "Composition Analysis",
+      typeClass: "text-blue-700",
+      bgClass: "bg-gradient-to-r from-blue-50 to-white border-blue-100",
+      iconClass: "text-blue-600",
+      text: "The artist employs the golden ratio in the positioning of key elements, creating a harmonious balance that naturally guides the viewer's eye through the work."
+    },
+    {
+      id: 6,
+      type: "Cultural Significance",
+      typeClass: "text-purple-700",
+      bgClass: "bg-gradient-to-r from-purple-50 to-white border-purple-100",
+      iconClass: "text-purple-600",
+      text: "This artwork addresses contemporary social dialogues about identity and belonging, reflecting broader cultural shifts in how we understand community and connection."
     }
   ];
+
+  // Use product insights if available, otherwise use defaults
+  const insightsToUse = artisticInsights.length > 0 ? artisticInsights : defaultInsights;
 
   // Determine which reviews to show based on toggle state
   const visibleReviews = showAllReviews ? critiques : critiques.slice(0, 1);
 
   // Determine which insights to show
-  const visibleInsights = showAllInsights ? artisticInsights : artisticInsights.slice(0, 2);
+  const visibleInsights = showAllInsights ? insightsToUse : insightsToUse.slice(0, 3);
 
   // Function to render artistic rating symbols (paint palette)
   const renderRating = (rating) => {
@@ -93,10 +194,116 @@ export const ProductReviews = ({ product }) => {
     { id: 'recent', label: 'Recent' }
   ];
 
+  // Icons for insights
+  const insightIcons = {
+    "Technique Highlight": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    ),
+    "Historical Context": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    "Color Analysis": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+      </svg>
+    ),
+    "Symbolism": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    "Composition Analysis": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    ),
+    "Cultural Significance": (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )
+  };
+
   return (
     <section id="critiques" className="mt-12 sm:mt-16 border-t border-gray-200 pt-6 sm:pt-10">
       <h2 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 mb-1 sm:mb-2">Artistic Perspectives</h2>
       <p className="text-gray-600 italic text-sm mb-6 sm:mb-8">Critical analyses and viewer impressions</p>
+
+      {/* Artistic Insights section - Moved to top */}
+      <div className="mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-serif font-medium text-gray-800">Artistic Insights</h3>
+          {insightsToUse.length > 3 && (
+            <button 
+              className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 font-medium"
+              onClick={() => setShowAllInsights(!showAllInsights)}
+            >
+              {showAllInsights ? "Show Less" : "View All"}
+            </button>
+          )}
+        </div>
+        
+        {/* New insight cards grid layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {visibleInsights.length > 0 ? (
+            visibleInsights.map(insight => (
+              <div 
+                key={insight.id} 
+                className={`${insight.bgClass} p-4 rounded-lg border shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer`}
+                onClick={() => setActiveInsight(activeInsight === insight.id ? null : insight.id)}
+              >
+                <div className="flex items-center mb-2">
+                  <span className={`${insight.iconClass} mr-2`}>
+                    {insightIcons[insight.type]}
+                  </span>
+                  <p className={`text-xs uppercase tracking-wider ${insight.typeClass} font-medium`}>{insight.type}</p>
+                </div>
+                <p className="text-sm font-serif italic text-gray-700">
+                  "{insight.text}"
+                </p>
+                {activeInsight === insight.id && (
+                  <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-600">
+                    <p>Tap anywhere on this card to collapse this extended insight.</p>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-6 bg-gray-50 rounded-lg">
+              <p className="text-gray-500 italic">No artistic insights available for this artwork.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Art detail visualizer - New feature */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+          <h4 className="font-serif font-medium text-gray-800 mb-3 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Artistic Detail Visualizer
+          </h4>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <button className="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-700 transition-colors duration-200">
+              Brushwork Detail
+            </button>
+            <button className="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-700 transition-colors duration-200">
+              Color Temperature Map
+            </button>
+            <button className="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-700 transition-colors duration-200">
+              Composition Lines
+            </button>
+            <button className="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-700 transition-colors duration-200">
+              Light & Shadow Analysis
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Mobile filter tabs */}
       <div className="flex mb-6 overflow-x-auto scrollbar-hide sm:hidden">
@@ -222,28 +429,6 @@ export const ProductReviews = ({ product }) => {
           <p className="text-gray-500 text-sm mt-2">Share your interpretation and be the first to contribute to the artistic dialogue.</p>
         </div>
       )}
-
-      {/* Artistic Insights section with working button */}
-      <div className="mt-10 pt-6 border-t border-gray-100">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-serif font-medium text-gray-800">Artistic Insights</h3>
-          <button 
-            className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 font-medium"
-            onClick={() => setShowAllInsights(!showAllInsights)}
-          >
-            {showAllInsights ? "Show Less" : "View All"}
-          </button>
-        </div>
-        
-        {visibleInsights.map(insight => (
-          <div key={insight.id} className={`${insight.bgClass} p-4 rounded-lg border mb-4`}>
-            <p className={`text-xs uppercase tracking-wider ${insight.typeClass} mb-1`}>{insight.type}</p>
-            <p className="text-sm font-serif italic text-gray-700">
-              "{insight.text}"
-            </p>
-          </div>
-        ))}
-      </div>
     </section>
   );
 };

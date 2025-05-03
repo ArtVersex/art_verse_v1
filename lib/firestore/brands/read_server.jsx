@@ -16,3 +16,5 @@ export const getAllBrands = async ()=>{
 );
     return list.docs.map((snap) => snap.data());
 }
+
+  

@@ -6,7 +6,11 @@ import Link from 'next/link';
 export const ProductDescription = ({ product }) => {
   const [activeTab, setActiveTab] = useState('description');
   const [brand, setBrand] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    artist: false,
+    artwork: false,
+    display: false
+  });
   
   // Use useEffect to fetch the brand data
   useEffect(() => {
@@ -20,19 +24,29 @@ export const ProductDescription = ({ product }) => {
     fetchBrand();
   }, [product?.brandID]);
 
-  // Function to truncate text and add "Read more" if too long
-  const TruncatableText = ({ text, maxLength = 150 }) => {
-    if (!text || text.length <= maxLength || expanded) {
-      return <p className="text-gray-600" dangerouslySetInnerHTML={{ __html: text }} />;
+  // Function to toggle expansion state for a specific section
+  const toggleExpanded = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Function to render text with optional "Read more" button
+  const TruncatableText = ({ text, maxLength = 150, section }) => {
+    // If no text or expanded or text is short enough, just render it
+    if (!text || text.length <= maxLength || expandedSections[section]) {
+      return <div className="text-gray-600" dangerouslySetInnerHTML={{ __html: text || '' }} />;
     }
     
+    // Otherwise, truncate and add "Read more" button
     const truncated = text.substring(0, maxLength) + '...';
     
     return (
       <div>
-        <p className="text-gray-600" dangerouslySetInnerHTML={{ __html: truncated }} />
+        <div className="text-gray-600" dangerouslySetInnerHTML={{ __html: truncated }} />
         <button 
-          onClick={() => setExpanded(true)}
+          onClick={() => toggleExpanded(section)}
           className="mt-2 text-red-600 hover:text-red-800 text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:underline"
         >
           Read more
@@ -142,6 +156,7 @@ export const ProductDescription = ({ product }) => {
                 <TruncatableText 
                   text={product?.artistDescription || "Known for their distinctive style that blends traditional techniques with contemporary themes, our featured artist has established themselves as a noteworthy voice in the modern art scene. Each piece represents hours of meticulous craftsmanship and creative vision."} 
                   maxLength={220}
+                  section="artist"
                 />
               </div>
             </div>
@@ -160,6 +175,7 @@ export const ProductDescription = ({ product }) => {
                 <TruncatableText 
                   text={product?.description || "This particular piece draws inspiration from natural landscapes and urban environments, creating a harmonious dialogue between opposing worlds. The artist employs a unique color palette that evokes both tranquility and dynamism."} 
                   maxLength={220}
+                  section="artwork"
                 />
               </div>
             </div>
@@ -178,6 +194,7 @@ export const ProductDescription = ({ product }) => {
                 <TruncatableText 
                   text={product?.displayRecommendations || "This artwork makes a striking impression in spaces with abundant natural light, where its rich colors and textures can be fully appreciated. Consider placing it in a living room, study, or entryway where it can serve as a conversation starter."} 
                   maxLength={220}
+                  section="display"
                 />
               </div>
             </div>
@@ -222,7 +239,11 @@ export const ProductDescription = ({ product }) => {
                   </div>
                   <div className="flex flex-row items-baseline">
                     <span className="text-gray-500 w-24 md:w-32 text-xs md:text-sm font-medium italic">Edition:</span>
-                    <span className="font-serif font-semibold text-gray-800 text-sm md:text-base">{product?.editionNumber || "1 of 1 (Original)"}</span>
+                    <span className="font-serif font-semibold text-gray-800 text-sm md:text-base">
+                      {product?.editionNumber && product?.totalEditionNumber ? 
+                        `${product.editionNumber} / ${product.totalEditionNumber}` : 
+                        "1 of 1 (Original)"}
+                    </span>
                   </div>
                   <div className="flex flex-row items-baseline">
                     <span className="text-gray-500 w-24 md:w-32 text-xs md:text-sm font-medium italic">Certificate:</span>
