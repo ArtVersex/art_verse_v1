@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* About Column */}
             <div className="col-span-1 md:col-span-1">
-              <h3 className="text-xl font-bold mb-4">Art Verse-X</h3>
+              <h3 className="text-xl font-bold mb-4">Aart Verse</h3>
               <p className="text-gray-400 mb-4">Creating unique contemporary art that speaks to the soul. Each piece tells its own story.</p>
               <div className="flex space-x-4">
                 <a href="https://www.instagram.com/lambuworld?utm_source=ig_web_button_share_sheet&igsh=ODdmZWVhMTFiMw==" className="text-gray-400 hover:text-white transition-colors">
@@ -79,7 +79,7 @@ export default function Footer() {
           {/* Bottom Footer */}
           <div className="border-t border-gray-800 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-400 text-sm">&copy; {currentYear} Art Verse-X. All rights reserved.</p>
+              <p className="text-gray-400 text-sm">&copy; {currentYear} Aart Verse. All rights reserved.</p>
               <div className="mt-4 md:mt-0">
                 <ul className="flex space-x-6">
                   <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a></li>
