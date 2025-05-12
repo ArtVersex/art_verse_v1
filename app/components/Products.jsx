@@ -11,7 +11,7 @@ import AddToCartButton from "./AddToCartButton";
 import BuyNowButton from "./BuyNowButton";
 import AuthContextProvider from "@/contexts/AuthContext";
 
-export default function ProductsGridView({ products, initialDisplayCount = 10 }) {
+export default function ProductsGridView({ products, initialDisplayCount = 10, mobileGridColumns = 1 }) {
   const [productsWithBrands, setProductsWithBrands] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -160,7 +160,7 @@ export default function ProductsGridView({ products, initialDisplayCount = 10 })
       
       <div className="max-w-screen-xl mx-auto px-3 sm:px-4">
         <div 
-          className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+          className={`grid grid-cols-${mobileGridColumns ? mobileGridColumns : 2} sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
         >
           {visibleProducts?.map((product, index) => {
             const discount = calculateDiscount(product.price, product.salePrice);
@@ -372,7 +372,7 @@ export default function ProductsGridView({ products, initialDisplayCount = 10 })
             
             <button
               onClick={handleViewMore}
-              className="group relative inline-flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2 sm:py-3 overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md transition-all duration-500 hover:shadow-lg hover:from-blue-600 hover:to-indigo-700"
+              className="group relative inline-flex items-center gap-1 sm:gap-2 px-4 sm:px-8 py-2 sm:py-3 overflow-visible rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md transition-all duration-500 hover:shadow-lg hover:from-blue-600 hover:to-indigo-700"
             >
               {/* Button inner glow/light effect */}
               <div className="absolute inset-0 w-full h-full bg-gradient-to-tr from-white to-transparent opacity-20 transform translate-y-3/4 group-hover:translate-y-0 transition-transform duration-500"></div>
@@ -388,7 +388,7 @@ export default function ProductsGridView({ products, initialDisplayCount = 10 })
               
               {/* Show remaining count if available */}
               {remainingCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center bg-white text-indigo-600 rounded-full text-[10px] sm:text-xs font-medium shadow-sm">
+                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center bg-white text-indigo-600 rounded-full text-[10px] sm:text-xs font-medium shadow-sm z-30">
                   {remainingCount < 100 ? remainingCount : '99+'}
                 </span>
               )}

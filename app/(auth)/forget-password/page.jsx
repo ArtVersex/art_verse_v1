@@ -1,22 +1,19 @@
 "use client";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firestore/firebase";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
-export default function Page() {
+export default function ForgetPasswordPage() {
     const router = useRouter();
-    const { user } = useAuth();
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [emailSent, setEmailSent] = useState(false);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isMounted, setIsMounted] = useState(false);
     const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     
     useEffect(() => {
         setIsMounted(true);
@@ -51,40 +48,32 @@ export default function Page() {
             window.removeEventListener('mousemove', handleMouseMove);
         };
     }, []);
-    
-    useEffect(() => {
-        if (user) {
-            router.push('/account');
-        }
-    }, [user, router]);
 
-    // Handle email login
-    const handleEmailLogin = async (e) => {
+    // Handle password reset
+    const handlePasswordReset = async (e) => {
         e.preventDefault();
         
-        if (!email || !password) {
-            toast.error("Please enter both email and password");
+        if (!email) {
+            toast.error("Please enter your email address");
             return;
         }
         
         try {
             setIsLoading(true);
-            await signInWithEmailAndPassword(auth, email, password);
-            toast.success("Successfully logged in!");
-            router.push('/account');
+            await sendPasswordResetEmail(auth, email);
+            setEmailSent(true);
+            toast.success("Password reset email sent! Check your inbox.");
         } catch (error) {
-            console.error("Login error:", error);
-            let errorMessage = "Failed to login";
+            console.error("Password reset error:", error);
+            let errorMessage = "Failed to send password reset email";
             
             // Parse Firebase error codes
             if (error.code === 'auth/user-not-found') {
                 errorMessage = "No account found with this email";
-            } else if (error.code === 'auth/wrong-password') {
-                errorMessage = "Incorrect password";
             } else if (error.code === 'auth/invalid-email') {
                 errorMessage = "Invalid email format";
             } else if (error.code === 'auth/too-many-requests') {
-                errorMessage = "Too many failed login attempts. Please try again later";
+                errorMessage = "Too many requests. Please try again later";
             }
             
             toast.error(errorMessage);
@@ -157,10 +146,6 @@ export default function Page() {
                             <stop offset="50%" stopColor="rgba(100,100,255,0.07)" />
                             <stop offset="100%" stopColor="rgba(200,100,200,0.05)" />
                         </linearGradient>
-                        <filter id="glow">
-                            <feGaussianBlur stdDeviation="8" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
                     </defs>
                     <path d="M0,96 C320,48 480,192 640,160 C800,128 960,0 1280,64 L1280,720 L0,720 Z" fill="url(#gradient1)" opacity="0.3">
                         <animate attributeName="d" dur="15s" repeatCount="indefinite" 
@@ -214,7 +199,7 @@ export default function Page() {
                     />
                 </div>
 
-                {/* Login Form with glass morphism effect */}
+                {/* Reset Password Form with glass morphism effect */}
                 <div 
                     className="flex flex-col gap-6 bg-white/15 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl w-full border border-white/20"
                     style={getFormTransform()}
@@ -222,93 +207,88 @@ export default function Page() {
                     <div className="space-y-3">
                         <h1 className="font-extrabold text-2xl md:text-3xl text-center">
                             <span className="bg-gradient-to-r from-pink-200 via-white to-indigo-200 bg-clip-text text-transparent drop-shadow-sm">
-                                Welcome Back
+                                Reset Password
                             </span>
                         </h1>
                         <p className="text-sm text-center text-gray-100/80">
-                            Login with your email or sign in with Google
+                            Enter your email to receive a password reset link
                         </p>
                     </div>
 
-                    <form onSubmit={handleEmailLogin} className="flex flex-col gap-5">
-                        <div className="group relative">
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                name="user-email"
-                                id="user-email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
-                                required
-                            />
-                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                    {emailSent ? (
+                        <div className="flex flex-col items-center text-center gap-4 py-4">
+                            <div className="bg-white/20 p-4 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <h3 className="text-white font-medium text-lg">Email Sent!</h3>
+                            <p className="text-white/80 text-sm">
+                                Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.
+                            </p>
+                            <div className="flex flex-col gap-4 w-full mt-4">
+                                <button
+                                    onClick={() => setEmailSent(false)}
+                                    className="w-full border border-white/30 hover:border-white/50 bg-white/10 text-white px-6 py-3 rounded-xl transition-all"
+                                >
+                                    Try again
+                                </button>
+                                <Link href="/login" className="text-center">
+                                    <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all text-sm">
+                                        Return to Login
+                                    </span>
+                                </Link>
+                            </div>
                         </div>
-                        
-                        <div className="group relative">
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                name="user-password"
-                                id="user-password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
-                                required
-                            />
-                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
-                        </div>
+                    ) : (
+                        <form onSubmit={handlePasswordReset} className="flex flex-col gap-5">
+                            <div className="group relative">
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    name="user-email"
+                                    id="user-email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
+                                    required
+                                />
+                                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                            </div>
 
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full relative overflow-hidden group"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl"></div>
-                            <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div className="absolute -inset-x-1 -bottom-1 h-1/3 bg-gradient-to-t from-white/20 to-transparent opacity-20"></div>
-                            <span className="relative block text-white py-3 font-medium">
-                                {isLoading ? (
-                                    <div className="flex justify-center items-center">
-                                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                        <span>Logging in...</span>
-                                    </div>
-                                ) : (
-                                    "Login"
-                                )}
-                            </span>
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full relative overflow-hidden group"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div className="absolute -inset-x-1 -bottom-1 h-1/3 bg-gradient-to-t from-white/20 to-transparent opacity-20"></div>
+                                <span className="relative block text-white py-3 font-medium">
+                                    {isLoading ? (
+                                        <div className="flex justify-center items-center">
+                                            <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                            <span>Sending...</span>
+                                        </div>
+                                    ) : (
+                                        "Send Reset Link"
+                                    )}
+                                </span>
+                            </button>
 
-                    {/* Links Section */}
-                    <div className="flex flex-col md:flex-row md:justify-between items-center gap-3 text-sm">
-                        <Link href={'/sign-up'}>
-                            <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all">
-                                New? Create Account
-                            </span>
-                        </Link>
-
-                        <Link href={'/forget-password'}>
-                            <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all">
-                                Forgot Password?
-                            </span>
-                        </Link>
-                    </div>
-
-                    <div className="relative flex py-2 items-center">
-                        <div className="flex-grow border-t border-white/20"></div>
-                        <span className="mx-4 text-white/70 text-sm">OR</span>
-                        <div className="flex-grow border-t border-white/20"></div>
-                    </div>
-
-                    {/* Google Sign-in Button */}
-                    <SignInWithGoogleComponent />
+                            <Link href="/" className="text-center">
+                                <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all text-sm">
+                                    Back to Login
+                                </span>
+                            </Link>
+                        </form>
+                    )}
                 </div>
                 
                 {/* Footer note with subtle animation */}
                 <div className="relative">
                     <p className="text-xs text-white/70 text-center mt-2 font-light">
-                        Secure login • Your data is protected
+                        Secure password reset • Your data is protected
                     </p>
                     <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1">
                         <div className="absolute w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full animate-pulse"></div>
@@ -316,54 +296,5 @@ export default function Page() {
                 </div>
             </section>
         </main>
-    );
-}
-
-function SignInWithGoogleComponent() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-
-    const handleLogin = async () => {
-        try {
-            setIsLoading(true);
-            const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
-            toast.success("Successfully signed in!");
-        } catch (error) {
-            toast.error(error?.message || "Failed to sign in with Google.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <button
-            onClick={handleLogin}
-            disabled={isLoading}
-            type="button"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className={`w-full flex items-center justify-center gap-3 relative overflow-hidden
-                ${isLoading ? "bg-gray-500/50 cursor-not-allowed" : "bg-white/10 backdrop-blur-sm border border-white/30 text-white"} 
-                transition-all shadow-lg rounded-xl py-3 px-4 hover:border-white/50`}
-        >
-            {/* Decorative background effect */}
-            {!isLoading && isHovered && (
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-pink-500/10 animate-pulse"></div>
-            )}
-            
-            {isLoading ? (
-                <div className="h-5 w-5 relative">
-                    <div className="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
-                </div>
-            ) : (
-                <>
-                    <div className="bg-white rounded-full p-1 shadow-inner">
-                        <FcGoogle className="h-4 w-4" />
-                    </div>
-                    <span className="font-normal">Sign in with Google</span>
-                </>
-            )}
-        </button>
     );
 }

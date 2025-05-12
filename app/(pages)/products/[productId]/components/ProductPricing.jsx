@@ -8,7 +8,8 @@ export const ProductPricing = ({ product }) => {
     
   // Format prices with commas for thousands
   const formatPrice = (price) => {
-    return price ? (price / 100).toLocaleString() : "0";
+    // return price ? (price / 100).toLocaleString() : "0";
+    return price;
   };
 
   const mainPrice = product?.salePrice || product?.price;

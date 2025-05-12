@@ -15,7 +15,7 @@ export default function BioSection({ bio, artistStatement }) {
         <div className="prose prose-purple max-w-none">
           {/* Bio with Read More functionality */}
           <div>
-            <p className="text-gray-700 leading-relaxed first-letter:text-4xl first-letter:font-serif first-letter:text-purple-600 first-letter:mr-1 first-letter:float-left">
+            <p className="text-gray-700 text-justify leading-relaxed first-letter:text-4xl first-letter:font-serif first-letter:text-purple-600 first-letter:mr-1 first-letter:float-left">
               {!expandedBio && bio?.length > 1600 
                 ? bio.substring(0, 1600) + '...' 
                 : bio}
@@ -44,7 +44,7 @@ export default function BioSection({ bio, artistStatement }) {
               <div className="relative">
                 <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-400 to-pink-400"></div>
                 <div className="pl-4">
-                  <p className="text-gray-700 leading-relaxed italic">
+                  <p className="text-gray-700 leading-relaxed italic text-justify ">
                     {!expandedStatement && artistStatement.length > 1600 
                       ? artistStatement.substring(0, 1600) + '...' 
                       : artistStatement}

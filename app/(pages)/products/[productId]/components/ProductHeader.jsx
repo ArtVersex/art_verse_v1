@@ -67,8 +67,14 @@ export const ProductHeader = ({ product }) => {
           <span className="absolute top-1 left-2 md:top-2 md:left-3 text-3xl md:text-5xl font-serif text-amber-200">"</span>
           <span className="absolute bottom-1 right-2 md:bottom-2 md:right-3 text-3xl md:text-5xl font-serif text-amber-200">"</span>
           
-          <p className="text-sm md:text-base text-stone-700 leading-relaxed max-w-2xl font-serif italic relative z-10 px-3">
+          <p className="text-sm md:text-base text-justify text-stone-700 leading-relaxed max-w-2xl font-serif italic relative z-10 px-3">
             {product.shortDescription}
+          <span>
+            {" "}
+          <a href="#section1" className="text-amber-300 hover:underline">
+             ..Read More 
+          </a>
+          </span>
           </p>
         </div>
       )}

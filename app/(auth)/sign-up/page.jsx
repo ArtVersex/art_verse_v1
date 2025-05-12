@@ -2,20 +2,24 @@
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firestore/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
-export default function Page() {
+export default function SignUpPage() {
     const router = useRouter();
     const { user } = useAuth();
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isMounted, setIsMounted] = useState(false);
     const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
     const [isLoading, setIsLoading] = useState(false);
     
     useEffect(() => {
@@ -58,33 +62,62 @@ export default function Page() {
         }
     }, [user, router]);
 
-    // Handle email login
-    const handleEmailLogin = async (e) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Handle email signup
+    const handleSignUp = async (e) => {
         e.preventDefault();
         
-        if (!email || !password) {
-            toast.error("Please enter both email and password");
+        // Form validation
+        if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+            toast.error("Please fill in all fields");
+            return;
+        }
+        
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        
+        if (formData.password.length < 6) {
+            toast.error("Password must be at least 6 characters");
             return;
         }
         
         try {
             setIsLoading(true);
-            await signInWithEmailAndPassword(auth, email, password);
-            toast.success("Successfully logged in!");
+            
+            // Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(
+                auth, 
+                formData.email, 
+                formData.password
+            );
+            
+            // Update profile with display name
+            await updateProfile(userCredential.user, {
+                displayName: formData.name
+            });
+            
+            toast.success("Account created successfully!");
             router.push('/account');
         } catch (error) {
-            console.error("Login error:", error);
-            let errorMessage = "Failed to login";
+            console.error("Sign up error:", error);
+            let errorMessage = "Failed to create account";
             
             // Parse Firebase error codes
-            if (error.code === 'auth/user-not-found') {
-                errorMessage = "No account found with this email";
-            } else if (error.code === 'auth/wrong-password') {
-                errorMessage = "Incorrect password";
+            if (error.code === 'auth/email-already-in-use') {
+                errorMessage = "Email already in use";
             } else if (error.code === 'auth/invalid-email') {
                 errorMessage = "Invalid email format";
-            } else if (error.code === 'auth/too-many-requests') {
-                errorMessage = "Too many failed login attempts. Please try again later";
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = "Password is too weak";
             }
             
             toast.error(errorMessage);
@@ -214,7 +247,7 @@ export default function Page() {
                     />
                 </div>
 
-                {/* Login Form with glass morphism effect */}
+                {/* Sign Up Form with glass morphism effect */}
                 <div 
                     className="flex flex-col gap-6 bg-white/15 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl w-full border border-white/20"
                     style={getFormTransform()}
@@ -222,23 +255,23 @@ export default function Page() {
                     <div className="space-y-3">
                         <h1 className="font-extrabold text-2xl md:text-3xl text-center">
                             <span className="bg-gradient-to-r from-pink-200 via-white to-indigo-200 bg-clip-text text-transparent drop-shadow-sm">
-                                Welcome Back
+                                Create Account
                             </span>
                         </h1>
                         <p className="text-sm text-center text-gray-100/80">
-                            Login with your email or sign in with Google
+                            Join us today or sign up with Google
                         </p>
                     </div>
 
-                    <form onSubmit={handleEmailLogin} className="flex flex-col gap-5">
+                    <form onSubmit={handleSignUp} className="flex flex-col gap-5">
                         <div className="group relative">
                             <input
-                                type="email"
-                                placeholder="Email"
-                                name="user-email"
-                                id="user-email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                type="text"
+                                placeholder="Full Name"
+                                name="name"
+                                id="user-name"
+                                value={formData.name}
+                                onChange={handleChange}
                                 className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
                                 required
                             />
@@ -247,16 +280,44 @@ export default function Page() {
                         
                         <div className="group relative">
                             <input
-                                type="password"
-                                placeholder="Password"
-                                name="user-password"
-                                id="user-password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                type="email"
+                                placeholder="Email Address"
+                                name="email"
+                                id="user-email"
+                                value={formData.email}
+                                onChange={handleChange}
                                 className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
                                 required
                             />
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                        </div>
+                        
+                        <div className="group relative">
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                name="password"
+                                id="user-password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
+                                required
+                            />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
+                        </div>
+                        
+                        <div className="group relative">
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                name="confirmPassword"
+                                id="confirm-password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                className="w-full px-5 py-3 border border-white/30 rounded-xl outline-none bg-white/10 backdrop-blur-sm text-white placeholder-white/50 focus:border-white/50 transition-all"
+                                required
+                            />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity -z-10"></div>
                         </div>
 
                         <button
@@ -271,26 +332,20 @@ export default function Page() {
                                 {isLoading ? (
                                     <div className="flex justify-center items-center">
                                         <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                        <span>Logging in...</span>
+                                        <span>Creating Account...</span>
                                     </div>
                                 ) : (
-                                    "Login"
+                                    "Sign Up"
                                 )}
                             </span>
                         </button>
                     </form>
 
                     {/* Links Section */}
-                    <div className="flex flex-col md:flex-row md:justify-between items-center gap-3 text-sm">
-                        <Link href={'/sign-up'}>
+                    <div className="text-center text-sm">
+                        <Link href={"/"}>
                             <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all">
-                                New? Create Account
-                            </span>
-                        </Link>
-
-                        <Link href={'/forget-password'}>
-                            <span className="text-white/80 hover:text-white hover:underline cursor-pointer transition-all">
-                                Forgot Password?
+                                Already have an account? Log in
                             </span>
                         </Link>
                     </div>
@@ -301,14 +356,14 @@ export default function Page() {
                         <div className="flex-grow border-t border-white/20"></div>
                     </div>
 
-                    {/* Google Sign-in Button */}
-                    <SignInWithGoogleComponent />
+                    {/* Google Sign-up Button */}
+                    <SignUpWithGoogleComponent />
                 </div>
                 
                 {/* Footer note with subtle animation */}
                 <div className="relative">
                     <p className="text-xs text-white/70 text-center mt-2 font-light">
-                        Secure login • Your data is protected
+                        Secure sign up • Your data is protected
                     </p>
                     <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1">
                         <div className="absolute w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full animate-pulse"></div>
@@ -319,18 +374,18 @@ export default function Page() {
     );
 }
 
-function SignInWithGoogleComponent() {
+function SignUpWithGoogleComponent() {
     const [isLoading, setIsLoading] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
-    const handleLogin = async () => {
+    const handleGoogleSignUp = async () => {
         try {
             setIsLoading(true);
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
-            toast.success("Successfully signed in!");
+            toast.success("Account created successfully!");
         } catch (error) {
-            toast.error(error?.message || "Failed to sign in with Google.");
+            toast.error(error?.message || "Failed to sign up with Google.");
         } finally {
             setIsLoading(false);
         }
@@ -338,7 +393,7 @@ function SignInWithGoogleComponent() {
 
     return (
         <button
-            onClick={handleLogin}
+            onClick={handleGoogleSignUp}
             disabled={isLoading}
             type="button"
             onMouseEnter={() => setIsHovered(true)}
@@ -361,7 +416,7 @@ function SignInWithGoogleComponent() {
                     <div className="bg-white rounded-full p-1 shadow-inner">
                         <FcGoogle className="h-4 w-4" />
                     </div>
-                    <span className="font-normal">Sign in with Google</span>
+                    <span className="font-normal">Sign up with Google</span>
                 </>
             )}
         </button>

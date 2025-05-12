@@ -44,7 +44,7 @@ export default async function Home() {
         <FeaturedProductSlider featuredProducts={featuredProducts} />
         <Collections collections={collections} />
         <Categories categories={categories} />
-        <ProductsGridView products={products} initialDisplayCount={8} /> {/* Reduced initial display count */}
+        <ProductsGridView products={products} initialDisplayCount={8} mobileGridColumns = {2} /> {/* Reduced initial display count */}
         
         {/* Artistic Gallery Link Section - Mobile Optimized */}
         <div className="max-w-screen-xl mx-auto px-4 py-8 sm:py-16 relative">

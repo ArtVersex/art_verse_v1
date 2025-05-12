@@ -152,9 +152,9 @@ export const ProductDescription = ({ product }) => {
               About the Artist
             </h3>
             <div className="bg-gray-50 p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
-              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200">
+              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200 text-justify">
                 <TruncatableText 
-                  text={product?.artistDescription || "Known for their distinctive style that blends traditional techniques with contemporary themes, our featured artist has established themselves as a noteworthy voice in the modern art scene. Each piece represents hours of meticulous craftsmanship and creative vision."} 
+                  text={brand?.artistStatement || "Known for their distinctive style that blends traditional techniques with contemporary themes, our featured artist has established themselves as a noteworthy voice in the modern art scene. Each piece represents hours of meticulous craftsmanship and creative vision."} 
                   maxLength={220}
                   section="artist"
                 />
@@ -165,13 +165,13 @@ export const ProductDescription = ({ product }) => {
           <ArtisticDivider />
 
           {/* Artwork Description - with artistic design */}
-          <div className="mb-8 md:mb-12">
+          <div id="section1" className="mb-8 md:mb-12">
             <h3 className="font-serif text-lg md:text-xl lg:text-2xl text-gray-800 mb-3 md:mb-4 flex items-center italic">
               <span className="inline-block w-6 md:w-10 h-0.5 bg-gradient-to-r from-red-400 to-red-600 mr-2 md:mr-3"></span>
               The Creative Vision
             </h3>
             <div className="bg-gray-50 p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
-              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200">
+              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200 text-justify">
                 <TruncatableText 
                   text={product?.description || "This particular piece draws inspiration from natural landscapes and urban environments, creating a harmonious dialogue between opposing worlds. The artist employs a unique color palette that evokes both tranquility and dynamism."} 
                   maxLength={220}
@@ -190,7 +190,7 @@ export const ProductDescription = ({ product }) => {
               Presentation &amp; Display
             </h3>
             <div className="bg-gray-50 p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
-              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200">
+              <div className="relative pl-3 md:pl-4 border-l-2 border-red-200 text-justify">
                 <TruncatableText 
                   text={product?.displayRecommendations || "This artwork makes a striking impression in spaces with abundant natural light, where its rich colors and textures can be fully appreciated. Consider placing it in a living room, study, or entryway where it can serve as a conversation starter."} 
                   maxLength={220}

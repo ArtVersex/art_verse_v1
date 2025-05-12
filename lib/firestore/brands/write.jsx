@@ -64,14 +64,14 @@ export const updateBrand = async ({ data, profileImage, bannerImage, portfolioIm
 
     // Upload new profile image if provided
     if (profileImage) {
-        const profileImageRef = ref(storage, `brands/${id}_${profileImage.name}`);
+        const profileImageRef = ref(storage, `brands/${Date.now()}_${id}_${Date.now()}_${profileImage.name}`);
         await uploadBytes(profileImageRef, profileImage);
         imageUrl = await getDownloadURL(profileImageRef);
     }
 
     // Upload new banner image if provided
     if (bannerImage) {
-        const bannerImageRef = ref(storage, `brands/${id}_${bannerImage.name}`);
+        const bannerImageRef = ref(storage, `brands/${id}_${Date.now()}_${bannerImage.name}`);
         await uploadBytes(bannerImageRef, bannerImage);
         bannerImageUrl = await getDownloadURL(bannerImageRef);
     }

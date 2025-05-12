@@ -108,9 +108,9 @@ export default function Collections({ collections }) {
                             Explore
                           </button>
                         </Link>
-                        <button className="flex items-center justify-center min-w-8 w-8 h-8 sm:w-10 sm:h-10 border border-pink-400 text-pink-500 rounded-full hover:bg-pink-400 hover:text-white transition duration-300 transform hover:rotate-12">
+                        {/* <button className="flex items-center justify-center min-w-8 w-8 h-8 sm:w-10 sm:h-10 border border-pink-400 text-pink-500 rounded-full hover:bg-pink-400 hover:text-white transition duration-300 transform hover:rotate-12">
                           <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>

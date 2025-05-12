@@ -59,8 +59,9 @@ export default async function CollectionPage({ params }) {
   }
   
   return (
-    <main className="max-w-5xl mx-auto p-10 md:p-10 relative">
-      {/* Artistic Background Elements */}
+    // <main className="max-w-5xl mx-auto p-10 md:p-10 relative">
+    <main className="mx-auto p-10 md:p-10 relative">
+    {/* Artistic Background Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
       <div className="absolute -bottom-32 right-20 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
       <div className="absolute top-1/2 -left-4 w-72 h-72 bg-rose-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
@@ -117,7 +118,7 @@ export default async function CollectionPage({ params }) {
       </div>
       
       {/* Products in Collection - Artistic Version */}
-      <div className="mb-16 relative z-10">
+      <div className="mb-16 relative z-1">
         {/* <div className="flex items-center mb-10">
           <svg className="w-6 h-6 text-indigo-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
