@@ -3,7 +3,7 @@ import { UploadCloud } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "../../spinner";
+// import Spinner from "../../spinner";
 import { getCollection } from "@/lib/firestore/collections/read_server";
 import { createNewCollection, updateCollection } from "@/lib/firestore/collections/write";
 import { useProducts } from "@/lib/firestore/products/read";
@@ -223,7 +223,7 @@ export default function Form() {
                 >
                     {isLoading ? (
                         <>
-                            <Spinner size={5} />
+                            {/* <Spinner size={5} /> */}
                             {id ? "Updating..." : "Creating..."}
                         </>
                     ) : (

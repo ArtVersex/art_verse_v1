@@ -1,47 +1,81 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Menu, X, Home, Phone, Info, LogIn, Search, Heart, ShoppingCart, User } from "lucide-react";
 import LogoutButton from "./LogoutButton";
-import AuthContextProvider from "@/contexts/AuthContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUser } from "@/lib/firestore/user/read"; // Import to fetch user data
+import { useUser } from "@/lib/firestore/user/read";
+
+// Map icon names to components - moved outside component to prevent re-creation
+const iconComponents = {
+  Home,
+  Phone,
+  Info,
+  Search,
+  Heart,
+  ShoppingCart,
+  User,
+  LogIn
+};
 
 export default function ClientSideHeader({ menuList, actionButtons }) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [hoverItem, setHoverItem] = useState(null);
+  const lastScrollY = useRef(0);
   const menuRef = useRef(null);
   const { user } = useAuth();
-  const { user: userData, isLoading } = useUser(user?.uid);
-  const [favoritesCount, setFavoritesCount] = useState(0);
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const { user: userData } = useUser(user?.uid);
+  
+  // Animation duration in ms - used for consistent timing
+  const animationDuration = 300;
 
-  // Update favorites count when userData changes
-  useEffect(() => {
-    if (userData?.favorites && Array.isArray(userData.favorites)) {
-      setFavoritesCount(userData.favorites.length);
-    } else {
-      setFavoritesCount(0);
-    }
+  // Calculate counts using useMemo to avoid unnecessary re-renders
+  const favoritesCount = useMemo(() => {
+    return userData?.favorites?.length || 0;
+  }, [userData?.favorites]);
+
+  const cartItemsCount = useMemo(() => {
+    return userData?.cart?.length || 0;
+  }, [userData?.cart]);
+
+  // Handle navigation with menu closing
+  const handleMobileNavigation = (path) => {
+    setIsMenuOpen(false);
     
-    // Update cart items count
-    if (userData?.cart && Array.isArray(userData.cart)) {
-      setCartItemsCount(userData.cart.length);
-    } else {
-      setCartItemsCount(0);
-    }
-  }, [userData]);
+    // Wait for menu animation before navigating
+    setTimeout(() => {
+      router.push(path);
+    }, animationDuration);
+  };
 
-  // Handle scroll event for header styling
+  // Handle scroll event for header styling and visibility
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      
+      // Set scrolled state for styling
+      if (currentScrollY > 10 !== scrolled) {
+        setScrolled(currentScrollY > 10);
+      }
+      
+      // Hide header on scroll down, show on scroll up
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        if (isVisible) setIsVisible(false);
+      } else {
+        if (!isVisible) setIsVisible(true);
+      }
+      
+      lastScrollY.current = currentScrollY;
     };
     
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [scrolled, isVisible]);
 
   // Handle click outside to close menu
   useEffect(() => {
@@ -60,23 +94,17 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
     };
   }, [isMenuOpen]);
 
-  // Map icon names to components
+  // Get icon component - optimized with cached icon components
   const getIcon = (iconName) => {
-    const icons = {
-      Home: Home,
-      Phone: Phone,
-      Info: Info,
-      Search: Search,
-      Heart: Heart,
-      ShoppingCart: ShoppingCart,
-      User: User,
-      LogIn: LogIn
-    };
-    const IconComponent = icons[iconName];
-    return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
+    const IconComponent = iconComponents[iconName];
+    return IconComponent ? (
+      <IconComponent 
+        className={`w-4 h-4 ${hoverItem === iconName ? 'text-blue-500 scale-125' : ''} transition-all duration-300`} 
+      />
+    ) : null;
   };
 
-  // Render action button with optional badge
+  // Render action button with optional badge and hover effects
   const renderActionButton = (item, index) => {
     const isHeartIcon = item.icon === "Heart";
     const isCartIcon = item.icon === "ShoppingCart";
@@ -87,18 +115,28 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
       <Link 
         key={index} 
         href={item.link}
-        className="p-2 rounded-full text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all relative"
+        className="relative p-2 rounded-full text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 overflow-visible group"
         aria-label={item.name}
         title={item.name}
+        onMouseEnter={() => setHoverItem(item.icon)}
+        onMouseLeave={() => setHoverItem(null)}
       >
-        {getIcon(item.icon)}
+        {/* Icon with animation */}
+        <div className="relative z-10">
+          {getIcon(item.icon)}
+        </div>
+        
+        {/* Paint splash effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 transform scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full opacity-30"></div>
+        
+        {/* Badge for Heart/Cart */}
         {showHeartBadge && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20 animate-pulse">
             {favoritesCount > 99 ? '99+' : favoritesCount}
           </span>
         )}
         {showCartBadge && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20 animate-pulse">
             {cartItemsCount > 99 ? '99+' : cartItemsCount}
           </span>
         )}
@@ -106,7 +144,7 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
     );
   };
 
-  // Render mobile action button with optional badge
+  // Render mobile action button with optional badge and enhanced artistic effects
   const renderMobileActionButton = (item, index) => {
     const isHeartIcon = item.icon === "Heart";
     const isCartIcon = item.icon === "ShoppingCart";
@@ -114,122 +152,296 @@ export default function ClientSideHeader({ menuList, actionButtons }) {
     const showCartBadge = isCartIcon && cartItemsCount > 0;
     
     return (
-      <Link 
+      <button 
         key={index} 
-        href={item.link} 
-        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-2 relative"
+        onClick={() => handleMobileNavigation(item.link)}
+        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 relative overflow-hidden group py-2 w-full text-left"
+        onMouseEnter={() => setHoverItem(item.icon)}
+        onMouseLeave={() => setHoverItem(null)}
       >
-        <div className="relative">
+        {/* Icon container with artistic background */}
+        <div className="relative p-2 rounded-lg bg-blue-50 shadow-sm overflow-visible">
           {getIcon(item.icon)}
+          
+          {/* Paint splatter effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 opacity-40 rounded-lg"></div>
+          
+          {/* Animated border on hover */}
+          <div className="absolute inset-0 rounded-lg border border-blue-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
           {showHeartBadge && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center z-10">
               {favoritesCount > 99 ? '99+' : favoritesCount}
             </span>
           )}
           {showCartBadge && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center z-10">
               {cartItemsCount > 99 ? '99+' : cartItemsCount}
             </span>
           )}
         </div>
-        <span>{item.name}</span>
-        {showHeartBadge && (
-          <span className="ml-1 text-xs font-semibold text-gray-500">({favoritesCount})</span>
-        )}
-        {showCartBadge && (
-          <span className="ml-1 text-xs font-semibold text-gray-500">({cartItemsCount})</span>
-        )}
-      </Link>
+        
+        {/* Text with artistic styling */}
+        <div className="flex flex-col">
+          <span className="relative z-10 font-semibold">
+            {item.name}
+            {/* Brush stroke underline animation */}
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+          </span>
+          
+          {showHeartBadge && (
+            <span className="text-xs font-medium text-blue-500">({favoritesCount} items)</span>
+          )}
+          {showCartBadge && (
+            <span className="text-xs font-medium text-blue-500">({cartItemsCount} items)</span>
+          )}
+        </div>
+        
+        {/* Subtle color splash effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left opacity-20"></div>
+      </button>
     );
   };
 
-  return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
-        scrolled 
-          ? "py-1 bg-white/95 backdrop-blur-md shadow-lg" 
-          : "py-2 bg-gradient-to-r from-white to-gray-100/90 backdrop-blur-sm"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-12">
-          {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center">
-            <img
-              className={`transition-all duration-300 ${
-                scrolled ? "h-4" : "h-5"
-              } hover:scale-105`}
-              src="/logo_v1.png"
-              alt="Logo"
-            />
-          </Link>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-3">
-            {menuList.map((item, index) => (
-              <Link 
-                key={index} 
-                href={item.link}
-                className="px-2 py-2 rounded-md text-sm lg:text-base text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-2"
-              >
-                <span className="hidden lg:block">{getIcon(item.icon)}</span>
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Action Buttons for Desktop */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-3">
-            {actionButtons.map((item, index) => renderActionButton(item, index))}
-
-            <AuthContextProvider>
-              <LogoutButton />
-            </AuthContextProvider>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div ref={menuRef} className="md:hidden">
-            <button
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-colors"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-
-            {/* Mobile Dropdown Menu */}
-            {isMenuOpen && (
-              <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-md py-4 md:hidden transition-opacity duration-300 ease-in-out">
-                <div className="flex flex-col space-y-4 px-6">
-                  {menuList.map((item, index) => (
-                    <Link 
-                      key={index} 
-                      href={item.link} 
-                      className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-2"
-                    >
-                      {getIcon(item.icon)}
-                      <span>{item.name}</span>
-                    </Link>
-                  ))}
-                  
-                  <div className="border-t border-gray-200 pt-3 mt-2"></div>
-                  
-                  {/* Action Buttons for Mobile */}
-                  {actionButtons.map((item, index) => renderMobileActionButton(item, index))}
-                  
-                  <Link 
-                    href="/login" 
-                    className="block px-5 py-2 text-center bg-blue-600 text-white rounded-full shadow-md hover:shadow-lg hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2"
-                  >
-                    {getIcon("LogIn")}
-                    <span>Login</span>
-                  </Link>
-                </div>
-              </div>
-            )}
+  // Render mobile menu items with artistic styling
+  const renderMobileMenuItem = (item, index) => {
+    return (
+      <button 
+        key={index} 
+        onClick={() => handleMobileNavigation(item.link)}
+        className="text-gray-700 hover:text-blue-500 transition-all font-medium flex items-center gap-3 py-2 group relative w-full text-left"
+      >
+        {/* Icon with artistic container */}
+        <div className="p-2 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden group-hover:bg-blue-100 transition-colors duration-300">
+          {getIcon(item.icon)}
+          
+          {/* Artistic splatter effect */}
+          <div className="absolute top-0 left-0 w-full h-full">
+            <div className="absolute -top-2 -left-2 w-4 h-4 bg-blue-200 rounded-full opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-purple-200 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
           </div>
         </div>
-      </div>
-    </nav>
+        
+        {/* Text with artistic highlight effect */}
+        <span className="relative">
+          {item.name}
+          {/* Brush stroke underline effect */}
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 group-hover:w-full transition-all duration-300"></span>
+        </span>
+      </button>
+    );
+  };
+
+  // Fixed shape for the background
+  const backgroundShape = (
+    <svg className="absolute top-0 left-0 w-full h-full opacity-20 z-0" viewBox="0 0 200 100" preserveAspectRatio="none">
+      <path 
+        fill="#e6f2ff"
+        d="M0,50 C30,20 50,80 70,50 C90,20 110,70 130,40 C150,10 170,60 200,30 L200,100 L0,100 Z" 
+      />
+    </svg>
+  );
+
+  return (
+    <>
+      <nav 
+        className={`fixed top-0 left-0 right-0 w-full z-40 transition-all duration-500 overflow-visible ${
+          scrolled 
+            ? "py-0.5 backdrop-blur-md shadow-lg" 
+            : "py-2"
+        } ${
+          isVisible
+            ? "transform translate-y-0" 
+            : "transform -translate-y-full"
+        }`}
+      >
+        {/* Watercolor-style background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-95 z-0"></div>
+        {backgroundShape}
+        
+        {/* Content wrapper */}
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-6 relative z-10">
+          <div className="flex items-center justify-between h-10">
+            {/* Logo with animation */}
+            <Link href="/" className="flex-shrink-0 flex items-center group relative">
+              <div className="overflow-hidden relative">
+                <img
+                  className={`transition-all duration-500 ${
+                    scrolled ? "h-5" : "h-7"
+                  } hover:scale-105 group-hover:opacity-100`}
+                  src="/logo_v1.png"
+                  alt="Logo"
+                />
+                
+                {/* Paint brush stroke animation on hover */}
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+              </div>
+              
+              {/* Brand name with artistic typography */}
+              <span className={`hidden sm:block ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-purple-700 ${
+                scrolled ? "text-base" : "text-lg"
+              } tracking-wider transition-all duration-300`}>
+                Aart Verse
+              </span>
+              
+              {/* Mobile brand name with artistic touch */}
+              <span className="sm:hidden ml-2 font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 text-base tracking-wide">
+                Aart Verse
+              </span>
+            </Link>
+
+            {/* Desktop Menu with hover effects */}
+            <div className="hidden md:flex items-center space-x-1 lg:space-x-4">
+              {menuList.map((item, index) => (
+                <Link 
+                  key={index} 
+                  href={item.link}
+                  className="px-3 py-2 rounded-md text-sm lg:text-base text-gray-700 font-medium hover:text-blue-600 transition-all flex items-center gap-2 relative group overflow-hidden"
+                  onMouseEnter={() => setHoverItem(item.name)}
+                  onMouseLeave={() => setHoverItem(null)}
+                >
+                  {/* Icon with animation */}
+                  <span className={`hidden lg:block transition-all duration-300 ${hoverItem === item.name ? 'scale-125 text-blue-500' : ''}`}>
+                    {getIcon(item.icon)}
+                  </span>
+                  
+                  {/* Text with relative positioning for underline effect */}
+                  <span className="relative">
+                    {item.name}
+                    {/* Animated underline effect */}
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                  </span>
+                  
+                  {/* Subtle background animation on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom opacity-50"></div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Action Buttons for Desktop with artistic effects */}
+            <div className="hidden md:flex items-center space-x-1 lg:space-x-3">
+              {actionButtons.map((item, index) => renderActionButton(item, index))}
+              {user ? <LogoutButton /> : null}
+            </div>
+
+            {/* Mobile Menu Button with enhanced artistic animation */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-blue-50 focus:outline-none transition-colors relative overflow-hidden group"
+                aria-label="Toggle menu"
+              >
+                <div className="relative z-10">
+                  {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </div>
+                
+                {/* Button hover animation */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 transform scale-0 group-hover:scale-100 transition-transform duration-300 rounded-full opacity-50"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Mobile Menu with animation - Fixed version */}
+      {isMenuOpen && (
+        <div 
+          ref={menuRef}
+          className="fixed top-10 inset-x-0 md:hidden bg-white shadow-lg z-30 transform transition-transform duration-300 ease-in-out max-h-[calc(100vh-2.5rem)] overflow-y-auto"
+          style={{
+            transformOrigin: "top",
+            animation: `slideDown ${animationDuration}ms ease forwards`
+          }}
+        >
+          {/* Artistic background for mobile menu */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-50 opacity-95"></div>
+          
+          {/* Mobile menu watercolor effect - fixed elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <svg className="absolute top-0 left-0 w-full h-full opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path 
+                fill="#e6f2ff"
+                d="M0,30 C20,10 30,40 50,20 C70,0 80,30 100,10 L100,100 L0,100 Z" 
+              />
+            </svg>
+            <svg className="absolute bottom-0 right-0 w-2/3 h-1/2 opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <circle cx="80" cy="80" r="30" fill="#f0e6ff" />
+            </svg>
+          </div>
+
+          {/* Menu content */}
+          <div className="max-w-5xl mx-auto px-4 py-5 relative z-10">
+            <div className="flex flex-col space-y-5">
+              {/* Main menu items with artistic styling */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2 border-b border-blue-100 pb-1">Navigation</h3>
+                {menuList.map((item, index) => renderMobileMenuItem(item, index))}
+              </div>
+              
+              <div className="border-t border-gray-100 pt-3"></div>
+              
+              {/* Action items with enhanced mobile styling */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2 border-b border-blue-100 pb-1">Quick Actions</h3>
+                {actionButtons.map((item, index) => renderMobileActionButton(item, index))}
+              </div>
+              
+              {/* Login/Logout Button */}
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                {user ? (
+                  <LogoutButton className="w-full" />
+                ) : (
+                  <button 
+                    onClick={() => handleMobileNavigation("/login")}
+                    className="w-full px-5 py-3 text-center text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-105 relative group overflow-hidden"
+                  >
+                    {/* Button background with artistic gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:to-purple-600 transition-colors duration-300"></div>
+                    
+                    {/* Artistic brush stroke overlay */}
+                    <div className="absolute inset-0 opacity-20">
+                      <div className="absolute top-0 left-0 w-full h-2 bg-white opacity-10"></div>
+                      <div className="absolute bottom-0 right-0 w-full h-1 bg-black opacity-10"></div>
+                    </div>
+                    
+                    {/* Button content */}
+                    <div className="flex items-center justify-center gap-2 relative z-10">
+                      {getIcon("LogIn")}
+                      <span className="font-semibold tracking-wide">Sign In / Register</span>
+                    </div>
+                    
+                    {/* Paint splash effect animation - static to avoid hydration issues */}
+                    <div className="absolute top-0 left-0 w-full h-full">
+                      <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
+                      <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-white rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 transform scale-0 group-hover:scale-100"></div>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Artistic footer element for mobile menu */}
+          <div className="py-3 px-6 bg-gradient-to-r from-blue-50 to-purple-50 relative">
+            <svg className="absolute bottom-0 right-0 w-full h-12 opacity-10" preserveAspectRatio="none" viewBox="0 0 100 30">
+              <path d="M0,30 C20,20 40,25 60,10 C80,0 100,15 100,30 L0,30 Z" fill="#4F46E5"></path>
+            </svg>
+            <p className="text-sm text-center text-gray-500 relative z-10">Explore the world of art</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Add global styles in a way that prevents hydration issues */}
+      <style jsx global>{`
+        @keyframes slideDown {
+          from {
+            transform: scaleY(0);
+          }
+          to {
+            transform: scaleY(1);
+          }
+        }
+      `}</style>
+    </>
   );
 }

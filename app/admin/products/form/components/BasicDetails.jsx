@@ -178,6 +178,22 @@ export default function BasicDetails({data, handleData}){
                 />
             </div>
 
+            {/* New field: Total Edition Number */}
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-edition-number">Total Edition</label>
+                <input 
+                    type="text"
+                    placeholder="Enter Total Edition (e.g., 2/50)"
+                    id="product-total-edition-number"
+                    name="product-total-edition-number"
+                    value={data?.totalEditionNumber ?? ""}
+                    onChange={(e) => {
+                        handleData("totalEditionNumber", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
             {/* New field: Certificate Number */}
             <div className="flex flex-col gap-1">
                 <label className="text-gray-500 text-xs" htmlFor="product-certificate-number">Certificate Number</label>
@@ -258,6 +274,103 @@ export default function BasicDetails({data, handleData}){
                     <option value={"Yes"}>Yes</option>
                 </select>
             </div>
+
+            {/* New field: Art Work Details */}
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-technique-highlight">Technique Highlight</label>
+                <input 
+                    type="text"
+                    placeholder="Technique Highlights"
+                    id="product-technique-highlight"
+                    name="product-technique-highlight"
+                    value={data?.techniqueHighlight ?? ""}
+                    onChange={(e) => {
+                        handleData("techniqueHighlight", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-Historical-Context">Historical Context</label>
+                <input 
+                    type="text"
+                    placeholder="Historical Context"
+                    id="product-Historical-Context"
+                    name="product-Historical-Context"
+                    value={data?.historicalContext ?? ""}
+                    onChange={(e) => {
+                        handleData("historicalContext", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-Color-Analysis">Color Analysis</label>
+                <input 
+                    type="text"
+                    placeholder="Color Analysis"
+                    id="product-Color-Analysis"
+                    name="product-Color-Analysis"
+                    value={data?.colorAnalysis ?? ""}
+                    onChange={(e) => {
+                        handleData("colorAnalysis", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-Symbolism">Symbolism</label>
+                <input 
+                    type="text"
+                    placeholder="Symbolism"
+                    id="product-Symbolism"
+                    name="product-Symbolism"
+                    value={data?.Symbolism ?? ""}
+                    onChange={(e) => {
+                        handleData("Symbolism", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-compositionAnalysis">Composition Analysis</label>
+                <input 
+                    type="text"
+                    placeholder="Composition Analysis"
+                    id="product-compositionAnalysis"
+                    name="product-compositionAnalysis"
+                    value={data?.compositionAnalysis ?? ""}
+                    onChange={(e) => {
+                        handleData("compositionAnalysis", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+            <div className="flex flex-col gap-1">
+                <label className="text-gray-500 text-xs" htmlFor="product-culturalSignificance">Cultural Significance</label>
+                <input 
+                    type="text"
+                    placeholder="Cultural Significance"
+                    id="product-culturalSignificance"
+                    name="product-culturalSignificance"
+                    value={data?.culturalSignificance ?? ""}
+                    onChange={(e) => {
+                        handleData("culturalSignificance", e.target.value)
+                    }}
+                    className="border px-4 py-2 rounded-lg w-full outline-none"
+                />
+            </div>
+
+
+
+
         </section>
     )
 }

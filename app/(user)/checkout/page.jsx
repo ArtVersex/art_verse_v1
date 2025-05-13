@@ -22,7 +22,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="max-w-6xl mx-auto py-15 px-4">
+    <main className="max-w-6xl mx-auto py-15 px-4 pt-20">
       <h1 className="text-3xl font-bold mb-8">Checkout</h1>
       <CheckoutComponent 
         userId={user.uid} 

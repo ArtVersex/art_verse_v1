@@ -18,7 +18,8 @@ export default function BuyNowButton({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (e) => {
+    e.preventDefault();
     setIsLoading(true);
     router.push(`/checkout?type=buynow&productId=${productId}`);
   };
@@ -31,19 +32,19 @@ export default function BuyNowButton({
     if (buttonText) return buttonText;
     if (isLoading) return 'Processing...';
     if (stock <= 0) return 'Out of Stock';
-    return 'Buy Now';
+    return 'Aquire';
   };
 
   // Size classes
   const sizeClasses = {
-    sm: "text-xs py-1.5 px-3",
+    sm: "text-xs py-1.5 px-2",
     md: "text-sm py-2 px-4",
     lg: "text-base py-2.5 px-5"
   };
 
   // Style variants
   const getVariantClasses = () => {
-    const base = "rounded font-medium transition-all duration-300 flex items-center justify-center gap-2 ";
+    const base = "rounded font-medium transition-all duration-300 flex items-center justify-center gap-1 ";
     
     // Determine width class
     const widthClass = fullWidth ? "w-full " : "";
@@ -57,13 +58,13 @@ export default function BuyNowButton({
     
     switch (variant) {
       case "outline":
-        return classes + "border-2 border-emerald-500 text-emerald-600 bg-emerald-50 hover:bg-emerald-100";
+        return classes + "border-2 border-blue-500 text-blue-600 bg-blue-50 hover:bg-blue-100";
       
       case "premium":
-        return classes + "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 transform hover:-translate-y-px";
+        return classes + "bg-gradient-to-r from-blue-500 to-blue-500 text-white shadow-sm hover:shadow-md hover:from-blue-600 hover:to-blue-700";
       
       default: // "default"
-        return classes + "bg-emerald-600 text-white hover:bg-emerald-700";
+        return classes + "bg-blue-600 text-white hover:bg-blue-700";
     }
   };
 
@@ -75,10 +76,10 @@ export default function BuyNowButton({
       aria-label="Buy now"
     >
       {showIcon && (isLoading ? 
-        <Loader2 size={size === "lg" ? 20 : 16} className="animate-spin" /> : 
-        <CreditCard size={size === "lg" ? 20 : 16} />
+        <Loader2 size={size === "lg" ? 18 : 14} className="animate-spin" /> : 
+        <CreditCard size={size === "lg" ? 18 : 14} />
       )}
-      {getButtonText()}
+      <span className="truncate">{getButtonText()}</span>
     </button>
   );
 }
