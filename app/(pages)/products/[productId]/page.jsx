@@ -150,6 +150,8 @@ async function ProductContent({ productId }) {
 
     return (
       <>
+
+          <Breadcrumb productTitle={product?.title} />
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
           <div className="mb-10 lg:mb-0">
             <ProductImageGallery
@@ -192,7 +194,7 @@ export default async function ProductPage({ params }) {
     <div className="bg-white py-7">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Suspense fallback={<ProductPageSkeleton />}>
-          <Breadcrumb productTitle={productId} />
+          {/* <Breadcrumb productTitle={productId} /> */}
           <ProductContent productId={productId} />
         </Suspense>
       </main>

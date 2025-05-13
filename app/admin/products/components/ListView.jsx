@@ -12,7 +12,7 @@ export default function ListView() {
     const { data: products, error, isLoading } = useProducts();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(25);
 
     const totalPages = Math.ceil((products?.length || 0) / itemsPerPage);
     const paginatedProducts = products?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -54,9 +54,9 @@ export default function ListView() {
                         onChange={handleItemsPerPageChange}
                         className="border border-gray-300 rounded-md px-2 py-1"
                     >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
                     </select>
                 </div>
             </div>

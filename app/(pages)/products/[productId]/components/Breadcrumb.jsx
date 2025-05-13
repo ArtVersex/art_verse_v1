@@ -52,7 +52,7 @@ export const Breadcrumb = ({ productTitle }) => {
             <ChevronRight className="w-4 h-4" />
           </li>
           <li>
-            <a href="/" className="text-stone-600 hover:text-amber-700 transition-colors duration-300">
+            <a href="/gallery" className="text-stone-600 hover:text-amber-700 transition-colors duration-300">
               Gallery
             </a>
           </li>
