@@ -1,66 +1,77 @@
 🎨 Aartverse
+Where Artists Meet Collectors
 
-Aartverse is a curated digital platform that connects independent artists with collectors and art lovers.
-It enables users to discover original artworks, purchase art, and commission custom pieces directly from verified artists — all in one seamless experience.
+Aartverse is a curated digital platform that connects independent artists with collectors and art lovers worldwide.
+Discover original artworks, commission custom pieces, and engage directly with verified artists — all in one seamless experience.
 
-🌐 Live: https://aartverse.com
+🌐 Live Website: https://aartverse.com
 
-✨ Features
-🧑‍🎨 Artist-Centric Platform
+🌟 Why Aartverse?
 
-Artist profile pages with:
+The art world is full of talent, yet:
 
-Biography & artist statement
+Artists struggle to gain visibility
 
-Portfolio images
+Collectors struggle to find authentic, original work
 
-Social links
+Commissions are often unstructured and opaque
 
-Contact & commission options
+Aartverse bridges this gap by creating a transparent, artist-first ecosystem that enables meaningful connections and trusted transactions.
 
-Verified artists for trust & authenticity
+✨ Key Features
+🧑‍🎨 Artist-First Platform
+
+Verified artist profiles
+
+Detailed bios & artist statements
+
+Portfolio galleries
+
+Social media & contact links
+
+Direct commission access
 
 🖼️ Art Discovery & Sales
 
-Browse artworks by artist
+Curated artist pages
 
-View detailed artwork listings
+Clean, gallery-style artwork presentation
 
-Clean, gallery-style product presentation
+Optimized image loading for performance
 
-Optimized image handling for performance
+Mobile-first responsive design
 
-🎯 Commission System
+🎯 Commission Workflow
 
-Commission request form per artist
+Structured commission request forms
 
-Direct email notifications to admins/artists
+Budget & vision capture
 
-WhatsApp integration for instant artist communication
+Email notifications to admins/artists
 
-Structured request flow (vision, budget, contact details)
+WhatsApp integration for instant communication
 
-📩 Email Notifications
+📩 Email & Notifications
 
-SMTP-based email delivery (Hostinger)
+SMTP-based transactional emails (Hostinger)
 
 Order confirmations
 
-Commission request notifications
+Commission requests
 
 Contact form submissions
 
-Spam-safe setup with SPF/DKIM/DMARC support
+Spam-safe setup (SPF / DKIM / DMARC)
 
-📱 Responsive & Modern UI
+📱 Modern UI / UX
 
-Fully responsive design (mobile-first)
+Premium, minimal design
+
+Tailwind CSS styling
 
 Smooth transitions & micro-interactions
 
-Clean typography and premium aesthetics
-
-Built with Tailwind CSS
+Fully responsive across devices
 
 🛠️ Tech Stack
 Frontend
@@ -73,34 +84,34 @@ Tailwind CSS
 
 Lucide Icons
 
-Backend / Services
+Backend & Services
 
 Firebase Firestore – data storage
 
-Next.js Server Actions & API Routes
+Next.js API Routes – serverless backend
 
-SMTP (Hostinger) – transactional emails
+SMTP (Hostinger) – email delivery
 
 Deployment
 
-Vercel – frontend & serverless APIs
+Vercel – frontend + serverless APIs
 
-🧩 Project Structure
+🗂️ Project Structure
 app/
 ├─ artists/
-│  └─ [brandID]/        # Artist profile pages
-├─ components/          # Reusable UI components
+│  └─ [brandID]/          # Artist profile pages
+├─ components/            # Reusable UI components
 ├─ api/
-│  ├─ contact-email/    # Contact form email API
-│  ├─ commission-email/ # Commission email API
-│  └─ order-email/      # Order confirmation API
+│  ├─ contact-email/      # Contact form email API
+│  ├─ commission-email/   # Commission request email API
+│  └─ order-email/        # Order confirmation email API
 ├─ about-us/
 ├─ contact-us/
 └─ page.js
 
-🔐 Environment Variables
+🔐 Environment Setup
 
-Create a .env.local file:
+Create a .env.local file in the root directory:
 
 EMAIL_HOST=smtp.hostinger.com
 EMAIL_PORT=465
@@ -108,58 +119,71 @@ EMAIL_USER=contact@aartverse.com
 EMAIL_PASS=your_password_here
 
 
-⚠️ Never commit .env.local to GitHub.
+⚠️ Important: Never commit .env.local to GitHub.
 
 🚀 Getting Started
-1️⃣ Clone the repository
+1️⃣ Clone the Repository
 git clone https://github.com/your-username/aartverse.git
 cd aartverse
 
-2️⃣ Install dependencies
+2️⃣ Install Dependencies
 npm install
 
-3️⃣ Run locally
+3️⃣ Run Locally
 npm run dev
 
 
-Visit: http://localhost:3000
+Visit 👉 http://localhost:3000
 
 🧠 Design Philosophy
 
-Artists first – visibility, storytelling, and fair access
+🎨 Artists First – creative freedom & visibility
 
-Collectors second – trust, clarity, and authenticity
+🔍 Trust & Authenticity – verified profiles
 
-Minimal middle layers – direct communication wherever possible
+🤝 Direct Connections – minimal middle layers
 
-Scalable architecture – ready for payments, dashboards, and growth
+⚡ Scalable Architecture – built for growth
 
-🛣️ Roadmap (Planned)
+🖥️ Performance Focused – optimized images & rendering
+
+🛣️ Roadmap
+
+Planned & upcoming enhancements:
 
 🔐 Artist authentication & dashboards
 
-💳 Integrated payments (card / crypto)
+💳 Integrated payments (Card / UPI / Crypto)
 
 📦 Order & commission tracking
 
 ⭐ Reviews & ratings
 
-🧾 Invoices & artwork certificates
+🧾 Artwork certificates & invoices
 
 🌍 Multi-currency & localization
 
+📊 Admin moderation tools
+
 🤝 Contributing
 
-Contributions are welcome!
-Feel free to fork the repository, open issues, or submit pull requests.
+Contributions, ideas, and feedback are welcome!
+
+Fork the repository
+
+Create a feature branch
+
+Submit a pull request
+
+Open issues for bugs or suggestions
 
 📬 Contact
 
-Website: https://aartverse.com
+🌐 Website: https://aartverse.com
 
-Email: contact@aartverse.com
+📧 Email: contact@aartverse.com
 
 📄 License
 
 This project is currently under a private / custom license.
-Please contact the owner for usage or collaboration permissions.
+For usage, collaboration, or commercial inquiries, please contact the owner.
