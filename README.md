@@ -1,13 +1,3 @@
-This README is:
-
-Clear for recruiters / collaborators
-
-Honest about current features
-
-Scalable for future roadmap
-
-Well-structured and modern
-
 🎨 Aartverse
 
 Aartverse is a curated digital platform that connects independent artists with collectors and art lovers.
