@@ -15,22 +15,52 @@ const ContactUs = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     setIsSubmitting(true);
         
-        // Simulate API call
-        setTimeout(() => {
-            console.log("Form submitted:", formData);
-            setIsSubmitting(false);
-            setIsSubmitted(true);
+    //     // Simulate API call
+    //     setTimeout(() => {
+    //         console.log("Form submitted:", formData);
+    //         setIsSubmitting(false);
+    //         setIsSubmitted(true);
             
-            setTimeout(() => {
-                setIsSubmitted(false);
-                setFormData({ name: "", email: "", message: "" });
-            }, 3000);
-        }, 1000);
+    //         setTimeout(() => {
+    //             setIsSubmitted(false);
+    //             setFormData({ name: "", email: "", message: "" });
+    //         }, 3000);
+    //     }, 1000);
+    // };
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+        const res = await fetch("/api/contact-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+        throw new Error(data.error || "Failed to send message");
+        }
+
+        setIsSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
+
+        setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (error) {
+        console.error("Contact form error:", error);
+        alert("Something went wrong. Please try again.");
+    } finally {
+        setIsSubmitting(false);
+    }
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-800 to-indigo-900 flex items-center justify-center p-6 pt-10">
@@ -143,7 +173,7 @@ const ContactUs = () => {
                     <p className="text-center text-gray-600 mb-3">Or connect with us directly:</p>
                     <div className="flex justify-center space-x-4">
                         <a
-                            href="https://wa.me/+919599761361"
+                            href="https://wa.me/+917982433408"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all shadow-md hover:shadow-green-200/50"

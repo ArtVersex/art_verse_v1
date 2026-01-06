@@ -60,7 +60,7 @@ export default function CheckoutLayout({ children }) {
         <div className="text-center p-6 border rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">Your Cart is Empty</h2>
           <p className="mb-4">Add items to your cart to begin checkout</p>
-          <Link href="/products" className="px-4 py-2 bg-blue-500 text-white rounded">
+          <Link href="/gallery" className="px-4 py-2 bg-blue-500 text-white rounded">
             Browse Products
           </Link>
         </div>
@@ -75,7 +75,7 @@ export default function CheckoutLayout({ children }) {
         <div className="text-center p-6 border rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">Product Not Found</h2>
           <p className="mb-4">The product you're looking for could not be found</p>
-          <Link href="/products" className="px-4 py-2 bg-blue-500 text-white rounded">
+          <Link href="/gallery" className="px-4 py-2 bg-blue-500 text-white rounded">
             Browse Products
           </Link>
         </div>
