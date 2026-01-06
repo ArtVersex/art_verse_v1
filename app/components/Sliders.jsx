@@ -2,6 +2,7 @@
 
 import { Heart, ShoppingCart, CreditCard, Star } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
 import FavoriteButton from "./FavoriteButton";
@@ -10,10 +11,30 @@ import AddToCartButton from "./AddToCartButton";
 
 export default function FeaturedProductSlider({ featuredProducts }) {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [imageLoadStates, setImageLoadStates] = useState({});
     
     useEffect(() => {
         setIsLoaded(true);
-    }, []);
+        
+        // Preload images for better performance
+        featuredProducts.forEach((product, index) => {
+            if (product.featureImageUrl) {
+                const img = new window.Image();
+                img.onload = () => {
+                    setImageLoadStates(prev => ({
+                        ...prev,
+                        [product.id]: true
+                    }));
+                };
+                img.src = product.featureImageUrl;
+                
+                // For first 2 images, set high priority
+                if (index < 2) {
+                    img.loading = 'eager';
+                }
+            }
+        });
+    }, [featuredProducts]);
 
     // Convert complex fields into plain values
     const updatedProducts = featuredProducts.map(product => ({
@@ -37,6 +58,7 @@ export default function FeaturedProductSlider({ featuredProducts }) {
         autoplaySpeed: 5000,
         pauseOnHover: true,
         arrows: true,
+        lazyLoad: 'progressive', // Add lazy loading
         responsive: [
             {
                 breakpoint: 768,
@@ -61,7 +83,7 @@ export default function FeaturedProductSlider({ featuredProducts }) {
             
             <div className="container mx-auto px-4">
                 <Slider {...settings}>
-                    {updatedProducts.map((product) => (
+                    {updatedProducts.map((product, index) => (
                         <div key={product.id} className="outline-none">
                             <div className="py-12 rounded-lg relative">
                                 {/* Product content container */}
@@ -134,17 +156,40 @@ export default function FeaturedProductSlider({ featuredProducts }) {
                                         </div>
                                     </div>
 
-                                    {/* Image Section */}
+                                    {/* Optimized Image Section */}
                                     <Link href={`/products/${product?.id}`} className="block">
                                         <div className="flex-shrink-0 w-full flex justify-center md:w-auto group perspective">
                                             <div className="relative transform transition-all duration-500 group-hover:rotate-y-6 group-hover:scale-105">
                                                 {/* Decorative frame */}
                                                 <div className="absolute inset-0 border-2 border-blue-100 rounded-2xl -m-3 md:-m-6"></div>
                                                 <div className="p-2 bg-white bg-opacity-80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden">
-                                                    <img
-                                                        className="h-48 sm:h-64 md:h-80 w-auto object-contain filter drop-shadow-md transition-transform duration-500"
+                                                    {/* Loading placeholder */}
+                                                    {!imageLoadStates[product.id] && (
+                                                        <div className="h-48 sm:h-64 md:h-80 w-48 sm:w-64 md:w-80 bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">
+                                                            <div className="text-gray-400 text-sm">Loading...</div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Optimized Next.js Image */}
+                                                    <Image
                                                         src={product.featureImageUrl}
                                                         alt={product.title || 'Product Image'}
+                                                        width={320}
+                                                        height={320}
+                                                        className={`h-48 sm:h-64 md:h-80 w-auto object-contain filter drop-shadow-md transition-all duration-500 ${
+                                                            imageLoadStates[product.id] ? 'opacity-100' : 'opacity-0'
+                                                        }`}
+                                                        priority={index < 2} // High priority for first 2 images
+                                                        placeholder="blur"
+                                                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                                                        sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 320px"
+                                                        quality={85}
+                                                        onLoad={() => {
+                                                            setImageLoadStates(prev => ({
+                                                                ...prev,
+                                                                [product.id]: true
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                                 {/* Subtle reflection */}

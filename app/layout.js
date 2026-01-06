@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "AAart Verse",
+  title: "Aart Verse",
   description: "Discover Art That Speaks to Your Soul",
 };
 

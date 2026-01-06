@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { auth } from "@/lib/firestore/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { createOrUpdateUser } from "@/lib/firestore/user/write";
 
 export default function Page() {
     const router = useRouter();
@@ -69,7 +70,8 @@ export default function Page() {
         
         try {
             setIsLoading(true);
-            await signInWithEmailAndPassword(auth, email, password);
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            await createOrUpdateUser(result.user);
             toast.success("Successfully logged in!");
             router.push('/account');
         } catch (error) {
@@ -327,7 +329,8 @@ function SignInWithGoogleComponent() {
         try {
             setIsLoading(true);
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const result = await signInWithPopup(auth, provider);
+            await createOrUpdateUser(result.user);
             toast.success("Successfully signed in!");
         } catch (error) {
             toast.error(error?.message || "Failed to sign in with Google.");
